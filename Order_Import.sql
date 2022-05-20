@@ -1,0 +1,31 @@
+-- Tao bang Order_Import
+CREATE TABLE Order_Import
+(
+    ord_Im_Num varchar2(10) PRIMARY KEY,
+    dateShipped date,
+    supID varchar2(10),
+    orderTotal number(11,2)
+);
+-- Rang buoc khoa ngoai
+ALTER TABLE ORDER_IMPORT ADD CONSTRAINT FK01_ORD_IM FOREIGN KEY(supID) REFERENCES Supplier(supID);
+
+-- Insert du lieu
+CREATE SEQUENCE ord_im_id
+MINVALUE 1
+MAXVALUE 9999999
+INCREMENT BY 1
+START WITH 1
+NOCACHE
+ORDER
+NOCYCLE;
+/
+INSERT INTO ORDER_IMPORT VALUES ('OI' || ord_im_id.nextval, TO_DATE('3-APR-2021', 'DD-MON-RR'), 'S1', 69500000);
+INSERT INTO ORDER_IMPORT VALUES ('OI' || ord_im_id.nextval, TO_DATE('5-APR-2021', 'DD-MON-RR'), 'S2', 100500000);
+INSERT INTO ORDER_IMPORT VALUES ('OI' || ord_im_id.nextval, TO_DATE('31-MAR-2021', 'DD-MON-RR'), 'S9', 112000000);
+INSERT INTO ORDER_IMPORT VALUES ('OI' || ord_im_id.nextval, TO_DATE('28-APR-2021', 'DD-MON-RR'), 'S2', 55600000);
+INSERT INTO ORDER_IMPORT VALUES ('OI' || ord_im_id.nextval, TO_DATE('26-MAY-2021', 'DD-MON-RR'), 'S3', 7850000);
+INSERT INTO ORDER_IMPORT VALUES ('OI' || ord_im_id.nextval, TO_DATE('18-MAR-2021', 'DD-MON-RR'), 'S10', 115500000);
+INSERT INTO ORDER_IMPORT VALUES ('OI' || ord_im_id.nextval, TO_DATE('7-MAR-2021', 'DD-MON-RR'), 'S6', 6500000);
+INSERT INTO ORDER_IMPORT VALUES ('OI' || ord_im_id.nextval, TO_DATE('8-MAY-2021', 'DD-MON-RR'), 'S5', 55700000);
+INSERT INTO ORDER_IMPORT VALUES ('OI' || ord_im_id.nextval, TO_DATE('31-MAR-2021', 'DD-MON-RR'), 'S4', 2000000);
+INSERT INTO ORDER_IMPORT VALUES ('OI' || ord_im_id.nextval, TO_DATE('26-MAY-2021', 'DD-MON-RR'), 'S2', 86500000);
