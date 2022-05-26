@@ -1,14 +1,14 @@
 -- Tao bang Inventory_Product
-CREATE TABLE INVENTORY_PRODUCT
+CREATE TABLE Inventory_Product
 (
-    StockID varchar2(10) NOT NULL,
-    ProID varchar2(10) NOT NULL, 
-    Num_Inventory_Pro number,
+    stockID varchar2(10) NOT NULL,
+    proID varchar2(10) NOT NULL, 
+    num_Inventory_Pro number,
     
-    CONSTRAINT PK_InvPro PRIMARY KEY(StockID, ProID)
+    CONSTRAINT PK_InvPro PRIMARY KEY(stockID, proID)
 );
-ALTER TABLE INVENTORY_PRODUCT ADD CONSTRAINT FK01_InvPro FOREIGN KEY(StockID) REFERENCES STOCK(StockID);
-ALTER TABLE INVENTORY_PRODUCT ADD CONSTRAINT FK02_InvPro FOREIGN KEY(ProID) REFERENCES PRODUCT(ProID);
+ALTER TABLE Inventory_Product ADD CONSTRAINT FK01_InvPro FOREIGN KEY(stockID) REFERENCES Stock(stockID);
+ALTER TABLE Inventory_Product ADD CONSTRAINT FK02_InvPro FOREIGN KEY(proID) REFERENCES Product(proID);
 
 -- Insert du lieu
 INSERT INTO INVENTORY_PRODUCT VALUES ('S1', 'P1', 200);

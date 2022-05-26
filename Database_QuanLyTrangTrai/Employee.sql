@@ -1,17 +1,17 @@
 -- Tao bang Employee
-CREATE TABLE EMPLOYEE
+CREATE TABLE Employee
 (
-    EmpID varchar2(10) PRIMARY KEY,
-    FarmID varchar2(10),
-    EmpName varchar2(40),
-    EmpAdd varchar2(400),
-    EmpPhone varchar2(25),
-    EmpEmail varchar2(50),
-    StartDate date,
-    UserID varchar2(10),
+    empID varchar2(10) PRIMARY KEY,
+    farmID varchar2(10),
+    empName varchar2(40),
+    empAdd varchar2(400),
+    empPhone varchar2(25),
+    empEmail varchar2(50),
+    startDate date,
+    userID varchar2(10),
     
-    CONSTRAINT FK01_EMP FOREIGN KEY(FarmID) REFERENCES FARM(FarmID),
-    CONSTRAINT FK02_EMP FOREIGN KEY(UserID) REFERENCES SYS_USER(UserID)
+    CONSTRAINT FK01_EMP FOREIGN KEY(farmID) REFERENCES Farm(farmID),
+    CONSTRAINT FK02_EMP FOREIGN KEY(userID) REFERENCES Sys_User(userID)
 );
 
 -- Insert du lieu

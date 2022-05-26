@@ -1,14 +1,14 @@
 -- Tao bang Inventory_Resources
-CREATE TABLE INVENTORY_RESOURCES
+CREATE TABLE Inventory_Resources
 (
-    StockID varchar2(10) NOT NULL,
-    ReID varchar2(10) NOT NULL, 
-    Num_Inventory_Re number,
+    stockID varchar2(10) NOT NULL,
+    reID varchar2(10) NOT NULL, 
+    num_Inventory_Re number,
     
-    CONSTRAINT PK_InvRe PRIMARY KEY(StockID, ReID)
+    CONSTRAINT PK_InvRe PRIMARY KEY(stockID, reID)
 );
-ALTER TABLE INVENTORY_RESOURCES ADD CONSTRAINT FK01_InvRe FOREIGN KEY(StockID) REFERENCES STOCK(StockID);
-ALTER TABLE INVENTORY_RESOURCES ADD CONSTRAINT FK02_InvRe FOREIGN KEY(ReID) REFERENCES RESOURCES(ReID);
+ALTER TABLE Inventory_Resources ADD CONSTRAINT FK01_InvRe FOREIGN KEY(stockID) REFERENCES Stock(stockID);
+ALTER TABLE Inventory_Resources ADD CONSTRAINT FK02_InvRe FOREIGN KEY(reID) REFERENCES Resources(reID);
 
 
 -- Insert du lieu

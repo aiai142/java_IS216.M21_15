@@ -1,12 +1,12 @@
 -- Tao bang Resources
-CREATE TABLE RESOURCES
+CREATE TABLE Resources
 (
-    ReID varchar2(10) PRIMARY KEY,
-    Re_Name varchar2(50),
-    RePrice number(11,2),
-    Unit varchar2(20),
+    reID varchar2(10) PRIMARY KEY,
+    resourcesName varchar2(50),
+    rePrice number(11,2),
+    unit varchar2(20),
 
-    CONSTRAINT CHK_UNIT CHECK (Unit IN('Bao', 'Goi', 'Chai', 'Cai'))
+    CONSTRAINT CHK_UNIT CHECK (unit IN('Bao', 'Goi', 'Chai', 'Cai'))
 );
 
 ---------- Insert du lieu

@@ -1,13 +1,13 @@
 -- Tao bang
-CREATE TABLE SYS_USER
+CREATE TABLE Sys_User
 (
-    UserID varchar2(10) PRIMARY KEY,
-    UserName varchar2(50),
-    UserPassword varchar2(16),
-    CreatedDate date,
-    UserRole varchar2(10)
+    userID varchar2(10) PRIMARY KEY,
+    userName varchar2(50),
+    userPassword varchar2(16),
+    createdDate date,
+    userRole varchar2(10)
 );
-ALTER TABLE SYS_USER ADD CONSTRAINT FK_USER FOREIGN KEY(UserRole) REFERENCES ROLE(UserRole);
+ALTER TABLE Sys_User ADD CONSTRAINT FK_User FOREIGN KEY(userRole) REFERENCES Role(userRole);
 
 -- Insert du lieu
 CREATE SEQUENCE user_id

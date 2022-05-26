@@ -1,9 +1,9 @@
 -- Tao bang Farm
-CREATE TABLE FARM
+CREATE TABLE Farm
 (
-    FarmID varchar2(10) PRIMARY KEY,
-    FarmName varchar2(20),
-    FarmAdd varchar2(400)
+    farmID varchar2(10) PRIMARY KEY,
+    farmName varchar2(20),
+    farmAdd varchar2(400)
 );
 
 -- Insert du lieu

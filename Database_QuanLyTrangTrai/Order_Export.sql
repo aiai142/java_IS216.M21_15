@@ -1,17 +1,17 @@
 -- Tao bang Order_Export
-CREATE TABLE ORDER_EXPORT
+CREATE TABLE Order_Export
 (
-    Ord_Ex_Num varchar2(10) PRIMARY KEY,
-    DateOrdered date,
-    TransID varchar2(10),
-    CusID varchar2(10),
-    PreTotal number(11,2),
-    DisID varchar2(10),
-    OrderTotal number(11,2),
+    ord_Ex_Num varchar2(10) PRIMARY KEY,
+    dateOrdered date,
+    transID varchar2(10),
+    cusID varchar2(10),
+    preTotal number(11,2),
+    disID varchar2(10),
+    orderTotal number(11,2),
     
-    CONSTRAINT FK01_ORD_EX FOREIGN KEY(TransID) REFERENCES TRANSPORT(TransID),
-    CONSTRAINT FK02_ORD_EX FOREIGN KEY(CusID) REFERENCES CUSTOMER(CuSID),
-    CONSTRAINT FK03_ORD_EX FOREIGN KEY(DisID) REFERENCES DISCOUNT(DisID)
+	CONSTRAINT FK01_ORD_EX FOREIGN KEY(transID) REFERENCES Transport(transID);
+	CONSTRAINT FK02_ORD_EX FOREIGN KEY(cusID) REFERENCES Customer(cuSID);
+	CONSTRAINT FK03_ORD_EX FOREIGN KEY(disID) REFERENCES Discount(disID);
 );
 
 -- Insert du lieu

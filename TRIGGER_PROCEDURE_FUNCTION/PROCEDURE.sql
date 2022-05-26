@@ -1,4 +1,4 @@
--- 1. Hien thi danh sach cac loai nong san chua trong mot kho v‡ so luong con lai trong kho
+-- 1. Hien thi danh sach cac loai nong san chua trong mot kho v√† so luong con lai trong kho
 -- Tham so vao: ma kho (StockID)
 
 CREATE OR REPLACE PROCEDURE ListProductInStock
@@ -41,7 +41,7 @@ IS
     
     CURSOR cur_pro IS
     SELECT ode.ProID, ProName, ProPrice, FarmID, SUM(Num_Products)
-    FROM ORDERDETAILS_EX ode, ORDER_EXPORT oe, PRODUCT p
+    FROM ORDER_DETAILS_EX ode, ORDER_EXPORT oe, PRODUCT p
     WHERE ode.Ord_Ex_Num = oe.Ord_Ex_Num
         AND ode.ProID = p.ProID
         AND EXTRACT(MONTH FROM DateOrdered) = thang AND EXTRACT(YEAR FROM DateOrdered) = nam
@@ -190,4 +190,21 @@ BEGIN
     || '    ' || diachi || '    ' || sodt || '    ' || email || '    ' || tientichluy || '    ' || idnguoidung );
     END LOOP;
     CLOSE DS;
+END;
+
+-- =============================================================
+SET SERVEROUTPUT ON;
+
+CREATE OR REPLACE PROCEDURE Them_MaKH (makh OUT varchar)
+IS
+BEGIN
+    makh := 'KH' || cus_id.nextval;
+END;
+
+/
+DECLARE 
+    ma_kh customer.cusid%TYPE;
+BEGIN
+    Them_MaKH(ma_kh);
+    DBMS_OUTPUT.PUT_LINE(ma_kh);
 END;

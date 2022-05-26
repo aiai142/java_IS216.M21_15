@@ -1,8 +1,8 @@
 -- Tao bang Transport
-CREATE TABLE TRANSPORT
+CREATE TABLE Transport
 (
-    TransID varchar2(10) PRIMARY KEY,
-    StatusTrans number(1)
+    transID varchar2(10) PRIMARY KEY,
+    statusTrans number(1)
 );
 
 -- Insert du lieu

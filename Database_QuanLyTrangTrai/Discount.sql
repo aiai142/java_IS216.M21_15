@@ -1,12 +1,12 @@
 -- Tao bang Discount
-CREATE TABLE DISCOUNT
+CREATE TABLE Discount
 (
-    DisID varchar2(10) PRIMARY KEY,
-    DisCode varchar2(20),
-    Value number(11,2),
-    CusType varchar2(20),
-    StartDate date,
-    EndDate date
+    disID varchar2(10) PRIMARY KEY,
+    disCode varchar2(20),
+    value number(11,2),
+    cusType varchar2(20),
+    startDate date,
+    endDate date
 );
 
 -- Insert du lieu

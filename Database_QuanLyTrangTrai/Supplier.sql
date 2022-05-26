@@ -1,11 +1,11 @@
 -- Tao bang Supplier
-CREATE TABLE SUPPLIER
+CREATE TABLE Supplier
 (
-    SupID varchar2(10) PRIMARY KEY,
-    SupName varchar2(50),
-    SupPhone varchar2(25),
-    SupAdd varchar2(400),
-    SupEmail varchar2(100)
+    supID varchar2(10) PRIMARY KEY,
+    supName varchar2(50),
+    supPhone varchar2(25),
+    supAdd varchar2(400),
+    supEmail varchar2(100)
 );
 
 -- Insert du lieu

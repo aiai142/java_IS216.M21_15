@@ -1,19 +1,19 @@
 -- Tao bang Customer
-CREATE TABLE CUSTOMER
+CREATE TABLE Customer
 (
-    CusID varchar2(10) PRIMARY KEY,
-    CusName varchar2(50),
-    Gender varchar2(10),
-    DateOfBirth date,
-    CusAdd varchar2(400),
-    CusPhone varchar2(25),
-    CusEmail varchar2(100),
-    CusType varchar2(20),
-    Accrued_Money number(11,2),
-    UserID varchar2(10),
+    cusID varchar2(10) PRIMARY KEY,
+    cusName varchar2(50),
+    gender varchar2(10),
+    dateOfBirth date,
+    cusAdd varchar2(400),
+    cusPhone varchar2(25),
+    cusEmail varchar2(100),
+    cusType varchar2(20),
+    accrued_Money number(11,2),
+    userID varchar2(10),
     
-    CONSTRAINT FK_CUS FOREIGN KEY(UserID) REFERENCES SYS_USER(UserID),
-    CONSTRAINT CHK_GENDER CHECK (Gender IN ('Nam', 'Nu'))
+    CONSTRAINT FK_CUS FOREIGN KEY(userID) REFERENCES SYS_USER(userID),
+    CONSTRAINT CHK_GENDER CHECK (gender IN ('Nam', 'Nu'))
 );
 
 -- Insert du lieu

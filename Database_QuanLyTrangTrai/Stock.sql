@@ -1,12 +1,12 @@
 -- Tao bang Stock
-CREATE TABLE STOCK
+CREATE TABLE Stock
 (
-    StockID varchar2(10) PRIMARY KEY,
-    StatusStock number(1),
-    Type number(1)
+    stockID varchar2(10) PRIMARY KEY,
+    statusStock number(1),
+    type number(1)
 );
-ALTER TABLE STOCK ADD CONSTRAINT CHK01_TUS CHECK (StatusStock IN (0, 1));
-ALTER TABLE STOCK ADD CONSTRAINT CHK02_TYPE CHECK (Type IN (1, 2));
+ALTER TABLE Stock ADD CONSTRAINT CHK01_STATUS CHECK (statusStock IN (0, 1));
+ALTER TABLE Stock ADD CONSTRAINT CHK02_TYPE CHECK (type IN (1, 2));
 
 -- Insert du lieu
 CREATE SEQUENCE stock_id
