@@ -52,6 +52,10 @@ public class AnhNhut extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jButton2)
                 .addGap(67, 67, 67))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(166, Short.MAX_VALUE)
+                .addComponent(jButton1)
+                .addGap(152, 152, 152))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -61,6 +65,9 @@ public class AnhNhut extends javax.swing.JFrame {
                 .addGap(36, 36, 36)
                 .addComponent(jButton1)
                 .addContainerGap(165, Short.MAX_VALUE))
+                .addGap(134, 134, 134)
+                .addComponent(jButton1)
+                .addContainerGap(144, Short.MAX_VALUE))
         );
 
         pack();
