@@ -437,6 +437,9 @@
                 <Property name="text" type="java.lang.String" value="QU&#x1ea2;N L&#xcd; T&#x1ed2;N KHO NGUY&#xca;N V&#x1eac;T LI&#x1ec6;U"/>
                 <Property name="horizontalAlignment" type="int" value="2"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btntonKhovlActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JButton" name="btntonSanPham">
               <Properties>
@@ -449,6 +452,9 @@
                 <Property name="text" type="java.lang.String" value="QU&#x1ea2;N L&#xcd; T&#x1ed2;N KHO N&#xd4;NG S&#x1ea2;N"/>
                 <Property name="horizontalAlignment" type="int" value="2"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btntonSanPhamActionPerformed"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>
@@ -482,9 +488,8 @@
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="jLabel2" alignment="0" max="32767" attributes="0"/>
-                      <Component id="jScrollPane11" alignment="1" pref="1349" max="32767" attributes="0"/>
                       <Group type="102" alignment="1" attributes="0">
-                          <EmptySpace max="32767" attributes="0"/>
+                          <EmptySpace pref="590" max="32767" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" alignment="0" attributes="0">
                                   <EmptySpace min="-2" pref="56" max="-2" attributes="0"/>
@@ -530,7 +535,7 @@
                                           </Group>
                                           <EmptySpace min="-2" pref="44" max="-2" attributes="0"/>
                                           <Group type="103" groupAlignment="0" attributes="0">
-                                              <Component id="textGia" min="-2" pref="166" max="-2" attributes="0"/>
+                                              <Component id="textGia_nong_san" min="-2" pref="166" max="-2" attributes="0"/>
                                               <Component id="cbb_loai_sp" min="-2" max="-2" attributes="0"/>
                                           </Group>
                                       </Group>
@@ -544,6 +549,7 @@
                           </Group>
                           <EmptySpace min="-2" pref="242" max="-2" attributes="0"/>
                       </Group>
+                      <Component id="jScrollPane11" alignment="0" pref="1350" max="32767" attributes="0"/>
                   </Group>
                 </DimensionLayout>
                 <DimensionLayout dim="1">
@@ -556,7 +562,7 @@
                               <Component id="jLabel15" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="textmaSP" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="jLabel25" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="textGia" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="textGia_nong_san" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
@@ -580,9 +586,9 @@
                               <Component id="btnsuaSP" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="btn_reset_product" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace min="-2" pref="23" max="-2" attributes="0"/>
+                          <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Component id="jScrollPane11" min="-2" pref="571" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="84" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="111" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -627,6 +633,9 @@
                     </Property>
                     <Property name="text" type="java.lang.String" value="X&#xf3;a"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnxoaSPActionPerformed"/>
+                  </Events>
                 </Component>
                 <Component class="javax.swing.JButton" name="btnsuaSP">
                   <Properties>
@@ -641,6 +650,9 @@
                     </Property>
                     <Property name="text" type="java.lang.String" value="S&#x1eed;a"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnsuaSPActionPerformed"/>
+                  </Events>
                 </Component>
                 <Container class="javax.swing.JScrollPane" name="jScrollPane11">
                   <AuxValues>
@@ -649,7 +661,7 @@
 
                   <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
                   <SubComponents>
-                    <Component class="javax.swing.JTable" name="tableListKH">
+                    <Component class="javax.swing.JTable" name="table_ds_nong_san">
                       <Properties>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Segoe UI" size="18" style="0"/>
@@ -717,6 +729,9 @@
                           <TableHeader reorderingAllowed="true" resizingAllowed="true"/>
                         </Property>
                       </Properties>
+                      <Events>
+                        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="table_ds_nong_sanMouseClicked"/>
+                      </Events>
                     </Component>
                   </SubComponents>
                 </Container>
@@ -782,7 +797,7 @@
                     <Property name="text" type="java.lang.String" value="Gi&#xe1;"/>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JTextField" name="textGia">
+                <Component class="javax.swing.JTextField" name="textGia_nong_san">
                 </Component>
                 <Component class="javax.swing.JButton" name="btntimSP">
                   <Properties>
@@ -805,6 +820,9 @@
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Reset"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_reset_productActionPerformed"/>
+                  </Events>
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel73">
                   <Properties>
@@ -1450,6 +1468,9 @@
                           <TableHeader reorderingAllowed="true" resizingAllowed="true"/>
                         </Property>
                       </Properties>
+                      <Events>
+                        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="table_ds_nguyenVLMouseClicked"/>
+                      </Events>
                     </Component>
                   </SubComponents>
                 </Container>
@@ -1554,12 +1575,11 @@
                       <Font name="Segoe UI" size="14" style="0"/>
                     </Property>
                     <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                      <StringArray count="5">
-                        <StringItem index="0" value="-----"/>
-                        <StringItem index="1" value="Bao"/>
-                        <StringItem index="2" value="Goi"/>
-                        <StringItem index="3" value="Chay"/>
-                        <StringItem index="4" value="Cai"/>
+                      <StringArray count="4">
+                        <StringItem index="0" value="Bao"/>
+                        <StringItem index="1" value="Goi"/>
+                        <StringItem index="2" value="Chay"/>
+                        <StringItem index="3" value="Cai"/>
                       </StringArray>
                     </Property>
                   </Properties>
@@ -1580,11 +1600,17 @@
                     </Property>
                     <Property name="text" type="java.lang.String" value="T&#xec;m"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btntimVLActionPerformed"/>
+                  </Events>
                 </Component>
                 <Component class="javax.swing.JButton" name="btn_reset_nguyen_vatlieu">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="jButton6"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_reset_nguyen_vatlieuActionPerformed"/>
+                  </Events>
                 </Component>
               </SubComponents>
             </Container>
@@ -3834,6 +3860,9 @@
                       </StringArray>
                     </Property>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cbb_mavl_tonActionPerformed"/>
+                  </Events>
                   <AuxValues>
                     <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
                   </AuxValues>
@@ -3893,6 +3922,9 @@
                           <TableHeader reorderingAllowed="true" resizingAllowed="true"/>
                         </Property>
                       </Properties>
+                      <Events>
+                        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="table_ds_inven_reMouseClicked"/>
+                      </Events>
                     </Component>
                   </SubComponents>
                 </Container>
@@ -4006,7 +4038,7 @@
                                       <Component id="jLabel64" alignment="0" min="-2" max="-2" attributes="0"/>
                                       <Component id="jLabel63" alignment="0" min="-2" max="-2" attributes="0"/>
                                   </Group>
-                                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="68" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Component id="cbb_ton_makho_ns" min="-2" max="-2" attributes="0"/>
                                       <Component id="cbb_ton_mans" min="-2" max="-2" attributes="0"/>
@@ -4021,9 +4053,9 @@
                                   <Component id="btn_Tim_nongsan_ton" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace type="separate" max="-2" attributes="0"/>
                                   <Component id="btn_them_nongsan_ton" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
                                   <Component id="btn_xoa_nongsan_ton" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                   <Component id="btn_sua_nongsan_ton" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace type="separate" max="-2" attributes="0"/>
                                   <Component id="btn_datlai_nongsan_ton" min="-2" max="-2" attributes="0"/>
@@ -4063,13 +4095,13 @@
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="btn_Tim_nongsan_ton" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="btn_them_nongsan_ton" alignment="3" min="-2" pref="24" max="-2" attributes="0"/>
-                              <Component id="btn_xoa_nongsan_ton" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="btn_sua_nongsan_ton" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="btn_datlai_nongsan_ton" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="btn_xoa_nongsan_ton" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Component id="jScrollPane15" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="32767" attributes="0"/>
+                          <EmptySpace pref="211" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -4283,6 +4315,9 @@
                           <TableHeader reorderingAllowed="true" resizingAllowed="true"/>
                         </Property>
                       </Properties>
+                      <Events>
+                        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="table_ds_ton_nsMouseClicked"/>
+                      </Events>
                     </Component>
                   </SubComponents>
                 </Container>
