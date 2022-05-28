@@ -655,18 +655,24 @@
                           <Font name="Segoe UI" size="18" style="0"/>
                         </Property>
                         <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                          <Table columnCount="7" rowCount="0">
+                          <Table columnCount="8" rowCount="0">
                             <Column editable="false" title="STT" type="java.lang.Object"/>
                             <Column editable="false" title="M&#xe3; s&#x1ea3;n ph&#x1ea9;m" type="java.lang.Object"/>
                             <Column editable="false" title="T&#xea;n s&#x1ea3;n ph&#x1ea9;m" type="java.lang.Object"/>
                             <Column editable="false" title="Gi&#xe1; " type="java.lang.Double"/>
                             <Column editable="true" title="M&#xe3; n&#xf4;ng tr&#x1ea1;i" type="java.lang.Object"/>
                             <Column editable="false" title="Lo&#x1ea1;i" type="java.lang.Object"/>
-                            <Column editable="false" title="C&#xf3; th&#x1ec3; b&#xe1;n" type="java.lang.Object"/>
+                            <Column editable="false" title="S&#x1ed1; l&#x1b0;&#x1ee3;ng" type="java.lang.Object"/>
+                            <Column editable="true" title="&#x1ea2;nh" type="java.lang.Object"/>
                           </Table>
                         </Property>
                         <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
                           <TableColumnModel selectionModel="0">
+                            <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
+                              <Title/>
+                              <Editor/>
+                              <Renderer/>
+                            </Column>
                             <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
                               <Title/>
                               <Editor/>
@@ -3695,10 +3701,8 @@
                                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                       <Component id="text_soluongvl_ton" alignment="0" pref="150" max="32767" attributes="0"/>
                                       <Component id="text_Tenvl_ton" alignment="0" max="32767" attributes="0"/>
-                                      <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
-                                          <Component id="cbb_mavl_ton" alignment="0" max="32767" attributes="0"/>
-                                          <Component id="cbb_makhovl_ton" alignment="0" max="32767" attributes="0"/>
-                                      </Group>
+                                      <Component id="cbb_mavl_ton" alignment="0" max="32767" attributes="0"/>
+                                      <Component id="cbb_makhovl_ton" alignment="0" max="32767" attributes="0"/>
                                   </Group>
                               </Group>
                               <Group type="102" alignment="0" attributes="0">
