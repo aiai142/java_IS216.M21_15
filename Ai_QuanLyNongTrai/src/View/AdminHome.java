@@ -1293,6 +1293,11 @@ public class AdminHome extends javax.swing.JFrame {
         table_ds_nguyenVL.setRowHeight(30);
         table_ds_nguyenVL.setShowGrid(false);
         table_ds_nguyenVL.setShowHorizontalLines(true);
+        table_ds_nguyenVL.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                table_ds_nguyenVLMouseClicked(evt);
+            }
+        });
         jScrollPane4.setViewportView(table_ds_nguyenVL);
 
         btnxoaVL.setBackground(new java.awt.Color(248, 211, 94));
@@ -1350,8 +1355,18 @@ public class AdminHome extends javax.swing.JFrame {
         btntimVL.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         btntimVL.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/transparency (1).png"))); // NOI18N
         btntimVL.setText("Tìm");
+        btntimVL.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btntimVLActionPerformed(evt);
+            }
+        });
 
         btn_reset_nguyen_vatlieu.setText("jButton6");
+        btn_reset_nguyen_vatlieu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_reset_nguyen_vatlieuActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jpnCard4Layout = new javax.swing.GroupLayout(jpnCard4);
         jpnCard4.setLayout(jpnCard4Layout);
@@ -2833,6 +2848,16 @@ public class AdminHome extends javax.swing.JFrame {
     private void jbtManaReActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtManaReActionPerformed
         // TODO add your handling code here:
         cardlayout.show(jpnCardLayout, "jpnListRe");
+          try {
+            showResources();
+            reset_resources();
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminHome.class
+                    .getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AdminHome.class
+                    .getName()).log(Level.SEVERE, null, ex);
+        }
 
 
     }//GEN-LAST:event_jbtManaReActionPerformed
@@ -2887,6 +2912,26 @@ public class AdminHome extends javax.swing.JFrame {
 
     private void btnxoaVLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnxoaVLActionPerformed
         // TODO add your handling code here:
+        String id = textMaVL.getText();
+        try {
+            int n = JOptionPane.showConfirmDialog(
+                    this,
+                    "Ban co muon xoa?",
+                    "Alert",
+                    JOptionPane.YES_NO_OPTION);
+            if (n == JOptionPane.YES_OPTION) {
+                Controller_Resource.delete(id);
+                showResources();
+                reset_resources();
+            }
+
+        } catch (SQLException ex) {
+            int code = ex.getErrorCode();
+            String msg = ex.getMessage();
+            JOptionPane.showMessageDialog(this, msg, String.valueOf(code), JOptionPane.ERROR_MESSAGE);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnxoaVLActionPerformed
 
     private void btnxoaNCCActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnxoaNCCActionPerformed
@@ -2984,11 +3029,84 @@ public class AdminHome extends javax.swing.JFrame {
 
     private void btnsuaVLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnsuaVLActionPerformed
         // TODO add your handling code here:
+          boolean check = false;
+        String mavl = textMaVL.getText();
+        String tenvl = texttenVL.getText();
+        String loaivl = (String) cbxloaiVL.getSelectedItem();
+        Integer giavl = 0;
+        if (!textgiaVL.getText().equalsIgnoreCase("")) {
+            giavl = Integer.parseInt(textgiaVL.getText());
+        }
+
+        if (textgiaVL.getText().equalsIgnoreCase("")) {
+            JOptionPane.showMessageDialog(this, "Giá nguyên vật liệu không được bỏ trống",
+                    "Lỗi", JOptionPane.ERROR_MESSAGE);
+        } else if (0 == giavl) {
+            JOptionPane.showMessageDialog(this, "Giá nguyên vật liệu không được 0",
+                    "Lỗi", JOptionPane.ERROR_MESSAGE);
+        } else if (tenvl.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Tên nguyên vật liệu không được bỏ trống",
+                    "Lỗi", JOptionPane.ERROR_MESSAGE);
+        } else {
+            try {
+                Resources rc = new Resources(mavl, tenvl, giavl, loaivl, 0);
+                check = Controller_Resource.update(rc);
+                if (check == true) {
+                    JOptionPane.showMessageDialog(this, "Đã sửa thành công.");
+                    showResources();
+                } else {
+                    JOptionPane.showMessageDialog(this, "sửa không thành công",
+                            "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
+                reset_resources();
+            } catch (SQLException ex) {
+                int code = ex.getErrorCode();
+                String msg = ex.getMessage();
+                JOptionPane.showMessageDialog(this, msg, String.valueOf(code), JOptionPane.ERROR_MESSAGE);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
 
     }//GEN-LAST:event_btnsuaVLActionPerformed
 
     private void btnthemVLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnthemVLActionPerformed
         // TODO add your handling code here:
+         boolean check = false;
+        String mavl = textMaVL.getText();
+        String tenvl = texttenVL.getText();
+        String loaivl = (String) cbxloaiVL.getSelectedItem();
+        Integer giavl = 0;
+        if (!textgiaVL.getText().equalsIgnoreCase("")) {
+            giavl = Integer.parseInt(textgiaVL.getText());
+        }
+        if (tenvl.equals("") || loaivl == null || giavl == 0) {
+            JOptionPane.showMessageDialog(this, "Hay dien day du thong tin cho nguyen vat lieu");
+        } else if (!mavl.equalsIgnoreCase("")) {
+            JOptionPane.showMessageDialog(this, "Không cần nhập mã nguyên vật liệu khi thêm mới!");
+        } else {
+            try {
+                Resources rc = new Resources("", tenvl, giavl, loaivl, 0);
+                check = Controller_Resource.insert(rc);
+                if (check == true) {
+                    JOptionPane.showMessageDialog(this, "Thêm nguyên vật liệu thành công.");
+                    showResources();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Thêm không thành công",
+                            "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
+                reset_resources();
+
+            } catch (SQLException ex) {
+                int code = ex.getErrorCode();
+                String msg = ex.getMessage();
+                JOptionPane.showMessageDialog(this, msg, String.valueOf(code), JOptionPane.ERROR_MESSAGE);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(AdminHome.class
+                        .getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
 
 
     }//GEN-LAST:event_btnthemVLActionPerformed
@@ -3268,6 +3386,49 @@ public class AdminHome extends javax.swing.JFrame {
             Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btn_them_anh_nsActionPerformed
+
+    private void table_ds_nguyenVLMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_table_ds_nguyenVLMouseClicked
+        // TODO add your handling code here:
+        int selectedIndex = table_ds_nguyenVL.getSelectedRow();
+        if (selectedIndex >= 0) {
+            Resources rc = resourcesList.get(selectedIndex);
+            textMaVL.setText(rc.getReID());
+            textMaVL.setEditable(false);
+            texttenVL.setText(rc.getResourcesName());
+            cbxloaiVL.setSelectedItem(rc.getUnit());
+            textgiaVL.setText(String.valueOf(rc.getRePrice()));
+        }
+    }//GEN-LAST:event_table_ds_nguyenVLMouseClicked
+
+    private void btntimVLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btntimVLActionPerformed
+        // TODO add your handling code here:
+        try {
+            //List<Resources> resourcesList = Controller_Resource.findAll();
+            tableModel5.setRowCount(0);
+            String tenvl = texttenVL.getText();
+            resourcesList = Controller_Resource.TimRc(tenvl);
+
+            for (Resources rcs : resourcesList) {
+                tableModel5.addRow(new Object[]{tableModel5.getRowCount() + 1, rcs.getReID(),
+                    rcs.getResourcesName(), rcs.getRePrice(), rcs.getQuantity(), rcs.getUnit()});
+            }
+        } catch (ClassNotFoundException | NumberFormatException | SQLException e) {
+        }
+    }//GEN-LAST:event_btntimVLActionPerformed
+
+    private void btn_reset_nguyen_vatlieuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_reset_nguyen_vatlieuActionPerformed
+        // TODO add your handling code here:
+         try {
+            // TODO add your handling code here:
+            showResources();
+            reset_resources();
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }//GEN-LAST:event_btn_reset_nguyen_vatlieuActionPerformed
 
     /**
      * @param args the command line arguments
