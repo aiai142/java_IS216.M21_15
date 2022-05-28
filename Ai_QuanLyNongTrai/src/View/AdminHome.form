@@ -530,7 +530,7 @@
                                           </Group>
                                           <EmptySpace min="-2" pref="44" max="-2" attributes="0"/>
                                           <Group type="103" groupAlignment="0" attributes="0">
-                                              <Component id="textGia" min="-2" pref="166" max="-2" attributes="0"/>
+                                              <Component id="textGia_nong_san" min="-2" pref="166" max="-2" attributes="0"/>
                                               <Component id="cbb_loai_sp" min="-2" max="-2" attributes="0"/>
                                           </Group>
                                       </Group>
@@ -556,7 +556,7 @@
                               <Component id="jLabel15" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="textmaSP" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="jLabel25" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="textGia" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="textGia_nong_san" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
@@ -649,7 +649,7 @@
 
                   <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
                   <SubComponents>
-                    <Component class="javax.swing.JTable" name="tableListKH">
+                    <Component class="javax.swing.JTable" name="table_ds_nong_san">
                       <Properties>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Segoe UI" size="18" style="0"/>
@@ -782,7 +782,7 @@
                     <Property name="text" type="java.lang.String" value="Gi&#xe1;"/>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JTextField" name="textGia">
+                <Component class="javax.swing.JTextField" name="textGia_nong_san">
                 </Component>
                 <Component class="javax.swing.JButton" name="btntimSP">
                   <Properties>

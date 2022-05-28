@@ -1,5 +1,13 @@
 package View;
 
+import Model.Inventory_Product;
+import Model.Inventory_Resources;
+import Model.Product;
+import Model.Resources;
+import Process.Controller_Inventory_Product;
+import Process.Controller_Inventory_Resources;
+import Process.Controller_Product;
+import Process.Controller_Resource;
 import java.awt.CardLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -37,6 +45,27 @@ import javax.swing.table.TableModel;
  * @author diuai
  */
 public class AdminHome extends javax.swing.JFrame {
+    DefaultTableModel tableModel5;
+    DefaultTableModel tableModel7;
+    DefaultTableModel tableModel6;
+    DefaultTableModel tableModel11;
+
+    //Bien list global cho trang nguyen vat lieu
+    List<Resources> resourcesList;
+
+    //Bien global cho trang quan ly TON NGUYEN VAT LIEU
+    List<Inventory_Resources> in_resourcesList;
+    List<String> data_combobox_id_resources;
+    List<String> data_combobox_stockid;
+
+    //bien global cho trang quan ly nong san
+    List<Product> productList;
+    List<String> data_combobox_farmid;
+
+    //Bien global cho trang quan ly TON NONG SAN
+    List<Inventory_Product> in_productList;
+    List<String> data_combobox_id_product;
+    List<String> data_combobox_stockid_pro;
 
 
     /**
@@ -48,8 +77,209 @@ public class AdminHome extends javax.swing.JFrame {
         initComponents();
         cardlayout = (CardLayout) jpnCardLayout.getLayout();
         //Set table cho quan li nong trai
+         //bang quan ly nguyen vat lieu
+        tableModel5 = (DefaultTableModel) table_ds_nguyenVL.getModel();
+        setCellsAlignment(table_ds_nguyenVL, SwingConstants.CENTER);
+
+        //bang quan ly ton nguyen vat lieu
+        tableModel7 = (DefaultTableModel) table_ds_inven_re.getModel();
+        setCellsAlignment(table_ds_inven_re, SwingConstants.CENTER);
+
+        //bang quan ly nong san
+        tableModel6 = (DefaultTableModel) table_ds_nong_san.getModel();
+        setCellsAlignment(table_ds_nong_san, SwingConstants.CENTER);
+
+        //bang quan ly ton nong san
+        tableModel11 = (DefaultTableModel) table_ds_ton_ns.getModel();
+        setCellsAlignment(table_ds_ton_ns, SwingConstants.CENTER);
+
+        try {
+            reset_product();
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        }
        
     }
+    
+    
+    
+    
+    
+       // can giua cac noi dung trong bang
+    public static void setCellsAlignment(JTable table, int alignment) {
+        DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
+        rightRenderer.setHorizontalAlignment(alignment);
+
+        TableModel tableModel = table.getModel();
+
+        for (int columnIndex = 0; columnIndex < tableModel.getColumnCount(); columnIndex++) {
+            table.getColumnModel().getColumn(columnIndex).setCellRenderer(rightRenderer);
+        }
+    }
+
+    //reset lai cac text field tren trang quan ly nguyen vat lieu
+    public void reset_resources() {
+        textMaVL.setText("");
+        texttenVL.setText("");
+        cbxloaiVL.setSelectedIndex(-1);
+        textgiaVL.setText("");
+        textMaVL.setEditable(true);
+    }
+
+    //Hien thi noi dung cua trang quan ly nguyen vat lieu
+    private void showResources() throws SQLException, ClassNotFoundException {
+        resourcesList = Controller_Resource.findAll();
+        tableModel5.setRowCount(0);
+
+        for (Resources rc : resourcesList) {
+            tableModel5.addRow(new Object[]{tableModel5.getRowCount() + 1, rc.getReID(),
+                rc.getResourcesName(), rc.getRePrice(), rc.getQuantity(), rc.getUnit()});
+        }
+    }
+
+    //reset lai cac text field tren trang quan ly ton nguyen 
+    public void reset_in_resources() throws SQLException, ClassNotFoundException {
+        showInvenResources();
+        show_Combobox_id_resources();
+        show_Combobox_stockid_resources();
+        show_text_name_resources();
+        cbb_makhovl_ton.setSelectedIndex(-1);
+        cbb_mavl_ton.setSelectedIndex(-1);
+        text_Tenvl_ton.setText("");
+        text_soluongvl_ton.setText("");
+        cbb_makhovl_ton.setEnabled(true);
+        cbb_mavl_ton.setEnabled(true);
+    }
+
+    //Hien thi noi dung cua trang quan ly ton kho nguyen vat lieu
+    private void showInvenResources() throws SQLException, ClassNotFoundException {
+        in_resourcesList = Controller_Inventory_Resources.findAll();
+        tableModel7.setRowCount(0);
+        for (Inventory_Resources rc : in_resourcesList) {
+            tableModel7.addRow(new Object[]{tableModel7.getRowCount() + 1, rc.getStockId(),
+                rc.getReId(), rc.getName(), rc.getNum_inventory_re()});
+        }
+    }
+
+    //Hien thi ma kho cho combobox ma kho 
+    //tren trang quan ly ton kho nguyen vat lieu
+    private void show_Combobox_stockid_resources() throws SQLException, ClassNotFoundException {
+        data_combobox_stockid = Controller_Inventory_Resources.allStockId();
+        cbb_makhovl_ton.removeAllItems();
+        for (String id : data_combobox_stockid) {
+            cbb_makhovl_ton.addItem(id);
+        }
+    }
+
+    //Hien thi ma nguyen vat lieu cho combobox ma nguyen vat lieu 
+    //tren trang quan ly ton kho nguyen vat lieu
+    private void show_Combobox_id_resources() throws SQLException, ClassNotFoundException {
+        data_combobox_id_resources = Controller_Inventory_Resources.id_resources();
+        cbb_mavl_ton.removeAllItems();
+        for (String id : data_combobox_id_resources) {
+            if (data_combobox_id_resources.contains(id)) {
+                cbb_mavl_ton.addItem(id);
+            }
+        }
+    }
+
+    //hien thi ten nguyen vat lieu o bang TON NGUYEN VAT LIEU khi chon tu cbb
+    private void show_text_name_resources() throws SQLException, ClassNotFoundException {
+        String id = (String) cbb_mavl_ton.getSelectedItem();
+        if (id != null) {
+            id = Controller_Inventory_Resources.get_name_resources(id);
+            text_Tenvl_ton.setText(id);
+        }
+    }
+
+    //Show thong tin cua nong san len trang quan ly
+    private void showProduct() throws SQLException, ClassNotFoundException {
+        productList = Controller_Product.findAll();
+        tableModel6.setRowCount(0);
+        for (Product pro : productList) {
+            tableModel6.addRow(new Object[]{tableModel6.getRowCount() + 1, pro.getProid(),
+                pro.getProname(), pro.getProfarmid(), pro.getProprice(), pro.getProtype(), pro.getQuantity(), pro.getImage()});
+        }
+    }
+
+    //show combobox ma trang trai tren bang quan ly nong san
+    private void show_Combobox_farmid_product() throws SQLException, ClassNotFoundException {
+        data_combobox_farmid = Controller_Product.farm_id();
+        cbb_ma_nong_trai_sp.removeAllItems();
+        for (String id : data_combobox_farmid) {
+            if (data_combobox_farmid.contains(id)) {
+                cbb_ma_nong_trai_sp.addItem(id);
+            }
+        }
+    }
+
+    //reset trang quan ly nong san
+    public void reset_product() throws SQLException, ClassNotFoundException {
+        showInvenProduct();
+        show_Combobox_farmid_product();
+        showProduct();
+        texttenSP.setText("");
+        textGia_nong_san.setText("");
+        text_link_anh.setText("");
+        textmaSP.setText("");
+        cbb_ma_nong_trai_sp.setSelectedIndex(-1);
+        cbb_loai_sp.setSelectedIndex(-1);
+        textmaSP.setEditable(true);
+    }
+
+    //Hien thi ma kho cho combobox ma kho 
+    //tren trang quan ly TON NONG SAN
+    private void show_Combobox_stockid_product() throws SQLException, ClassNotFoundException {
+        data_combobox_stockid_pro = Controller_Inventory_Product.allStockId();
+        cbb_ton_makho_ns.removeAllItems();
+        for (String id : data_combobox_stockid_pro) {
+            cbb_ton_makho_ns.addItem(id);
+        }
+    }
+
+    //Hien thi ma nong san cho combobox ma nong san
+    //tren trang quan ly TON NONG SAN
+    private void show_Combobox_id_product() throws SQLException, ClassNotFoundException {
+        data_combobox_id_product = Controller_Inventory_Product.id_product();
+        cbb_ton_mans.removeAllItems();
+        for (String id : data_combobox_id_product) {
+            if (data_combobox_id_product.contains(id)) {
+                cbb_ton_mans.addItem(id);
+            }
+        }
+    }
+
+    //reset lai cac text field tren trang quan ly TON NONG SAN
+    public void reset_in_product() throws SQLException, ClassNotFoundException {
+        show_Combobox_id_product();
+        show_Combobox_stockid_product();
+        showInvenProduct();
+        cbb_ton_makho_ns.setSelectedIndex(-1);
+        cbb_ton_mans.setSelectedIndex(-1);
+        txt_ton_tenns.setText("");
+        txt_ton_soluong_ns.setText("");
+    }
+
+    //hien thi ten nong san o bang TON nong san khi chon tu cbb
+    private void show_text_name_product() throws SQLException, ClassNotFoundException {
+        String id = (String) cbb_ton_mans.getSelectedItem();
+        if (id != null) {
+            id = Controller_Inventory_Product.get_name_product(id);
+            txt_ton_tenns.setText(id);
+        }
+    }
+
+    private void showInvenProduct() throws SQLException, ClassNotFoundException {
+        in_productList = Controller_Inventory_Product.findAll();
+        tableModel11.setRowCount(0);
+        for (Inventory_Product rc : in_productList) {
+            tableModel11.addRow(new Object[]{tableModel11.getRowCount() + 1, rc.getStockId(),
+                rc.getProId(), rc.getName(), rc.getNum_inventory_pro()});
+        }
+    }
+
 
     //Reset lai cac text field trang cua trang nong trai
   
@@ -97,7 +327,7 @@ public class AdminHome extends javax.swing.JFrame {
         btnxoaSP = new javax.swing.JButton();
         btnsuaSP = new javax.swing.JButton();
         jScrollPane11 = new javax.swing.JScrollPane();
-        tableListKH = new javax.swing.JTable();
+        table_ds_nong_san = new javax.swing.JTable();
         jLabel15 = new javax.swing.JLabel();
         textmaSP = new javax.swing.JTextField();
         jLabel16 = new javax.swing.JLabel();
@@ -105,7 +335,7 @@ public class AdminHome extends javax.swing.JFrame {
         jLabel18 = new javax.swing.JLabel();
         cbb_loai_sp = new javax.swing.JComboBox<>();
         jLabel25 = new javax.swing.JLabel();
-        textGia = new javax.swing.JTextField();
+        textGia_nong_san = new javax.swing.JTextField();
         btntimSP = new javax.swing.JButton();
         btn_reset_product = new javax.swing.JButton();
         jLabel73 = new javax.swing.JLabel();
@@ -601,8 +831,8 @@ public class AdminHome extends javax.swing.JFrame {
         btnsuaSP.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/pencil.png"))); // NOI18N
         btnsuaSP.setText("Sửa");
 
-        tableListKH.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        tableListKH.setModel(new javax.swing.table.DefaultTableModel(
+        table_ds_nong_san.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        table_ds_nong_san.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -625,10 +855,10 @@ public class AdminHome extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        tableListKH.setRowHeight(30);
-        tableListKH.setRowSelectionAllowed(false);
-        tableListKH.setShowGrid(false);
-        jScrollPane11.setViewportView(tableListKH);
+        table_ds_nong_san.setRowHeight(30);
+        table_ds_nong_san.setRowSelectionAllowed(false);
+        table_ds_nong_san.setShowGrid(false);
+        jScrollPane11.setViewportView(table_ds_nong_san);
 
         jLabel15.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jLabel15.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -726,7 +956,7 @@ public class AdminHome extends javax.swing.JFrame {
                                     .addComponent(jLabel18))
                                 .addGap(44, 44, 44)
                                 .addGroup(jpnCard1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(textGia, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(textGia_nong_san, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(cbb_loai_sp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(jpnCard1Layout.createSequentialGroup()
                                 .addComponent(btn_them_anh_ns, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -744,7 +974,7 @@ public class AdminHome extends javax.swing.JFrame {
                     .addComponent(jLabel15)
                     .addComponent(textmaSP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel25)
-                    .addComponent(textGia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(textGia_nong_san, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(15, 15, 15)
                 .addGroup(jpnCard1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel16)
@@ -3072,13 +3302,13 @@ public class AdminHome extends javax.swing.JFrame {
     private javax.swing.JPanel jpnCardLayout;
     private javax.swing.JTable tableKH;
     private javax.swing.JTable tableKM;
-    private javax.swing.JTable tableListKH;
     private javax.swing.JTable tableNongTrai;
     private javax.swing.JTable tableSup;
     private javax.swing.JTable table_ds_inven_re;
     private javax.swing.JTable table_ds_nguyenVL;
+    private javax.swing.JTable table_ds_nong_san;
     private javax.swing.JTable table_ds_ton_ns;
-    private javax.swing.JTextField textGia;
+    private javax.swing.JTextField textGia_nong_san;
     private javax.swing.JTextField textMaKho;
     private javax.swing.JTextField textMaNT;
     private javax.swing.JTextField textMaVL;
