@@ -13,6 +13,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.sql.Date;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -29,9 +34,11 @@ import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableModel;
 
@@ -825,11 +832,21 @@ public class AdminHome extends javax.swing.JFrame {
         btnxoaSP.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         btnxoaSP.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/trash.png"))); // NOI18N
         btnxoaSP.setText("Xóa");
+        btnxoaSP.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnxoaSPActionPerformed(evt);
+            }
+        });
 
         btnsuaSP.setBackground(new java.awt.Color(244, 211, 94));
         btnsuaSP.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         btnsuaSP.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/pencil.png"))); // NOI18N
         btnsuaSP.setText("Sửa");
+        btnsuaSP.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnsuaSPActionPerformed(evt);
+            }
+        });
 
         table_ds_nong_san.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         table_ds_nong_san.setModel(new javax.swing.table.DefaultTableModel(
@@ -858,6 +875,11 @@ public class AdminHome extends javax.swing.JFrame {
         table_ds_nong_san.setRowHeight(30);
         table_ds_nong_san.setRowSelectionAllowed(false);
         table_ds_nong_san.setShowGrid(false);
+        table_ds_nong_san.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                table_ds_nong_sanMouseClicked(evt);
+            }
+        });
         jScrollPane11.setViewportView(table_ds_nong_san);
 
         jLabel15.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
@@ -905,12 +927,22 @@ public class AdminHome extends javax.swing.JFrame {
         });
 
         btn_reset_product.setText("Reset");
+        btn_reset_product.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_reset_productActionPerformed(evt);
+            }
+        });
 
         jLabel73.setText("Mã nông trại");
 
         cbb_ma_nong_trai_sp.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         btn_them_anh_ns.setText("Ảnh");
+        btn_them_anh_ns.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_them_anh_nsActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jpnCard1Layout = new javax.swing.GroupLayout(jpnCard1);
         jpnCard1.setLayout(jpnCard1Layout);
@@ -2869,8 +2901,42 @@ public class AdminHome extends javax.swing.JFrame {
     }//GEN-LAST:event_btnsuaNCCActionPerformed
 
     private void btnthemSPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnthemSPActionPerformed
-        // TODO add your handling code here:
-        //open AddProduct
+        boolean check = false;
+        String masp = textmaSP.getText();
+        String tenns = texttenSP.getText();
+        String mant = (String) cbb_ma_nong_trai_sp.getSelectedItem();
+        String loains = (String) cbb_loai_sp.getSelectedItem();
+        String anh = text_link_anh.getText();
+        Integer giasp = 0;
+
+        if (!textGia_nong_san.getText().equalsIgnoreCase("")) {
+            giasp = Integer.parseInt(textGia_nong_san.getText());
+        }
+        if (tenns.equals("") || mant == null || loains == null || anh.equals("")) {
+            JOptionPane.showMessageDialog(this, "Hay dien day du thong tin");
+        } else if (!masp.equalsIgnoreCase("")) {
+            JOptionPane.showMessageDialog(this, "Them moi khong can nhap ma");
+        } else {
+            try {
+                Product pro = new Product("", tenns, giasp, mant, loains, anh, 0);
+                check = Controller_Product.insert(pro);
+                if (check == true) {
+                    JOptionPane.showMessageDialog(this, "Thêm nguyên vật liệu thành công.");
+                    showProduct();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Thêm không thành công",
+                            "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
+                reset_product();;
+            } catch (SQLException e) {
+                int code = e.getErrorCode();
+                String msg = e.getMessage();
+                JOptionPane.showMessageDialog(this, msg, String.valueOf(code), JOptionPane.ERROR_MESSAGE);
+
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
 
 
     }//GEN-LAST:event_btnthemSPActionPerformed
@@ -2902,7 +2968,18 @@ public class AdminHome extends javax.swing.JFrame {
     }//GEN-LAST:event_textMaKhoActionPerformed
 
     private void btntimSPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btntimSPActionPerformed
-        // TODO add your handling code here:
+        try {
+            //List<Resources> resourcesList = Controller_Resource.findAll();
+            tableModel6.setRowCount(0);
+            String tensp = texttenSP.getText();
+            productList = Controller_Product.find_product(tensp);
+
+            for (Product pro : productList) {
+                tableModel6.addRow(new Object[]{tableModel6.getRowCount() + 1, pro.getProid(), pro.getProname(),
+                    pro.getProfarmid(), pro.getProprice(), pro.getProtype(), pro.getQuantity(), pro.getImage(),});
+            }
+        } catch (ClassNotFoundException | NumberFormatException | SQLException e) {
+        }
     }//GEN-LAST:event_btntimSPActionPerformed
 
     private void btnsuaVLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnsuaVLActionPerformed
@@ -3080,6 +3157,117 @@ public class AdminHome extends javax.swing.JFrame {
     private void textOrd_Ex_NumActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textOrd_Ex_NumActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_textOrd_Ex_NumActionPerformed
+
+    private void table_ds_nong_sanMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_table_ds_nong_sanMouseClicked
+        int selectedIndex = table_ds_nong_san.getSelectedRow();
+        if (selectedIndex >= 0) {
+            Product pro = productList.get(selectedIndex);
+            textmaSP.setText(pro.getProid());
+            texttenSP.setText(pro.getProname());
+            cbb_ma_nong_trai_sp.setSelectedItem(pro.getProfarmid());
+            textGia_nong_san.setText(String.valueOf(pro.getProprice()));
+            cbb_loai_sp.setSelectedItem(pro.getProtype());
+            text_link_anh.setText(pro.getImage());
+            textmaSP.setEditable(false);
+        }
+    }//GEN-LAST:event_table_ds_nong_sanMouseClicked
+
+    private void btnxoaSPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnxoaSPActionPerformed
+        // TODO add your handling code here:
+        String id = textmaSP.getText();
+        try {
+            int n = JOptionPane.showConfirmDialog(
+                    this,
+                    "Ban co muon xoa?",
+                    "Alert",
+                    JOptionPane.YES_NO_OPTION);
+            if (n == JOptionPane.YES_OPTION) {
+                Controller_Product.delete(id);
+                showProduct();
+                reset_product();
+            }
+
+        } catch (SQLException ex) {
+            int code = ex.getErrorCode();
+            String msg = ex.getMessage();
+            JOptionPane.showMessageDialog(this, msg, String.valueOf(code), JOptionPane.ERROR_MESSAGE);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnxoaSPActionPerformed
+
+    private void btnsuaSPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnsuaSPActionPerformed
+        boolean check = false;
+        String id = textmaSP.getText();
+        String tenns = texttenSP.getText();
+        String mant = (String) cbb_ma_nong_trai_sp.getSelectedItem();
+        String loains = (String) cbb_loai_sp.getSelectedItem();
+        String anh = text_link_anh.getText();
+        Integer giasp = 0;
+
+        if (!textGia_nong_san.getText().equalsIgnoreCase("")) {
+            giasp = Integer.parseInt(textGia_nong_san.getText());
+        }
+        if (tenns.equals("") || mant == null || loains == null || anh.equals("") || giasp == 0) {
+            JOptionPane.showMessageDialog(this, "Hay dien day du thong tin");
+        } else {
+            try {
+                Product pro = new Product(id, tenns, giasp, mant, loains, anh, 0);
+                check = Controller_Product.update(pro);
+                if (check == true) {
+                    JOptionPane.showMessageDialog(this, "Đã sửa thành công.");
+                    showResources();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Sửa không thành công",
+                            "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
+                reset_product();
+            } catch (SQLException ex) {
+                int code = ex.getErrorCode();
+                String msg = ex.getMessage();
+                JOptionPane.showMessageDialog(this, msg, String.valueOf(code), JOptionPane.ERROR_MESSAGE);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_btnsuaSPActionPerformed
+
+    private void btn_reset_productActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_reset_productActionPerformed
+        try {
+            // TODO add your handling code here:
+            reset_product();
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btn_reset_productActionPerformed
+
+    private void btn_them_anh_nsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_them_anh_nsActionPerformed
+        try {
+            JFileChooser fileChooser = new JFileChooser();
+            FileNameExtensionFilter imageFilter = new FileNameExtensionFilter("Hình", "jpg", "png", "jpeg");
+            fileChooser.setFileFilter(imageFilter);
+            fileChooser.setMultiSelectionEnabled(false);
+            int x = fileChooser.showDialog(this, "Chọn file");
+            if (x == JFileChooser.APPROVE_OPTION) {
+                File file_in = fileChooser.getSelectedFile();
+                String path = file_in.getAbsolutePath();
+
+                File inStream = new File(path);
+
+                File file_out = new File("");
+                text_link_anh.setText("/src/Resources/" + inStream.getName());
+                File outStream = new File(file_out.getAbsolutePath() + "/src/Resources/" + inStream.getName());
+
+                Files.copy(inStream.toPath(), outStream.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            }
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btn_them_anh_nsActionPerformed
 
     /**
      * @param args the command line arguments
