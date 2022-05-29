@@ -19,6 +19,25 @@ import java.sql.*;
  *
  * @author Lenovo
  */
+//public class Ai_QuanLyNongTrai {
+//
+//    /**
+//     * @param args the command line arguments
+//     */
+//    public static void main(String[] args){
+//        // TODO code application logic here
+//             java.awt.EventQueue.invokeLater(() -> {
+//         try {
+//             new AdminHome().setVisible(true);
+//         } catch (SQLException | ClassNotFoundException ex) {
+//             Logger.getLogger(Ai_QuanLyNongTrai.class.getName()).log(Level.SEVERE, null, ex);
+//         }
+//     });
+//     
+//       }
+//      }  
+//    
+
 public class Ai_QuanLyNongTrai {
 
     /**
@@ -26,8 +45,10 @@ public class Ai_QuanLyNongTrai {
      */
     public static void main(String[] args){
         // TODO code application logic here
-     
-       }
-      }  
-    
+     java.awt.EventQueue.invokeLater(() -> {
+         new AdminHome().setVisible(true);
+     });
+    }
+}
+
 

@@ -1,5 +1,12 @@
 package View;
 
+import Model.Employee;
+import Model.Stock;
+import Model.Transport;
+import Model.User;
+import Process.Controller_Employee;
+import Process.Controller_Stock;
+import Process.Controller_Transport;
 import java.awt.CardLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -38,6 +45,21 @@ import javax.swing.table.TableModel;
  */
 public class AdminHome extends javax.swing.JFrame {
 
+    DefaultTableModel tableModel8; //tableModel cua stock
+    DefaultTableModel tableModel9; //tableModel cua employee
+    DefaultTableModel tableModel10; //tableModel cua transport
+    
+    //Bien global cho trang stock
+    List<Stock> stockList;
+    
+    //Bien global cho user
+    List<User> userList;
+    
+    //Bien global cho trang employee
+    List<Employee> employeeList;
+
+    //Bien global cho trang transport
+    List<Transport> transportList;
 
     /**
      * Creates new form AdminHome
@@ -48,10 +70,127 @@ public class AdminHome extends javax.swing.JFrame {
         initComponents();
         cardlayout = (CardLayout) jpnCardLayout.getLayout();
         //Set table cho quan li nong trai
+        
+        //bang quan ly stock
+        tableModel8 = (DefaultTableModel) jTable8.getModel();
+        setCellsAlignment(jTable8, SwingConstants.CENTER);
+        
+        //bang quan ly Employee
+        tableModel9 = (DefaultTableModel) jTable9.getModel();
+        setCellsAlignment(jTable9, SwingConstants.CENTER);
+        
+        //bang quan ly Transport
+        tableModel10 = (DefaultTableModel) jTable10.getModel();
+        setCellsAlignment(jTable10, SwingConstants.CENTER);
        
+    }
+    
+    public static void setCellsAlignment(JTable table, int alignment) {
+        DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
+        rightRenderer.setHorizontalAlignment(alignment);
+
+        TableModel tableModel = table.getModel();
+
+        for (int columnIndex = 0; columnIndex < tableModel.getColumnCount(); columnIndex++) {
+            table.getColumnModel().getColumn(columnIndex).setCellRenderer(rightRenderer);
+        }
     }
 
     //Reset lai cac text field trang cua trang nong trai
+    //reset lai cac text field tren trang quan ly nguyen vat lieu
+    public void reset_resources() {
+        textMaVL.setText("");
+        texttenVL.setText("");
+        cbxloaiVL.setSelectedIndex(0);
+        textgiaVL.setText("");
+        textMaVL.setEditable(true);
+    }
+   
+       //reset lai cac text field tren trang quan ly kho
+    public void reset_stock() {
+        textMaKho.setText("");
+        boxTrangThai.setSelectedIndex(-1);
+        boxLoai.setSelectedIndex(-1);
+        textMaKho.setEditable(true);
+    }
+    
+        //reset lai cac text field tren trang quan ly nhan vien
+    public void reset_Employee() {
+        
+        textmaNV.setText("");
+        boxFarmID.setSelectedIndex(-1);
+        texttenNV.setText("");
+        textdiaChiNV.setText("");
+        textsdtNV.setText("");
+        textemailNV.setText("");
+        txtStartDate.setDate(null);
+        boxUserRole.setSelectedIndex(-1);
+        textuserName.setText("");
+        textpassWord.setText("");
+        textMaKho.setEditable(true);
+    }
+    
+    //reset lai cac text field tren trang quan ly van chuyen
+    public void reset_transport() {
+        textTransID.setText("");
+        textOrd_Ex_Num.setText("");
+        boxStatusTrans.setSelectedIndex(-1);
+        textTransID.setEditable(true);
+    }
+    
+    // Hien thi danh sach kho
+    private void showStock() throws SQLException, ClassNotFoundException {
+         stockList = Controller_Stock.findAll();
+        tableModel8.setRowCount(0);
+        String stt;
+        String type;
+
+        for (Stock st : stockList) {
+            if(st.getStatusStock()==1){
+                stt="Chưa đầy";
+            }else{
+                stt="Đầy";
+            }
+            if(st.getType()==1){
+                type="Sản phẩm";
+            }else{
+                type="Vật liệu";
+            }
+            
+            tableModel8.addRow(new Object[]{tableModel8.getRowCount() + 1, st.getStockID(),
+                stt, type});
+        }
+    }
+    
+    //Hien thi danh sach nhan vien
+        private void showEmployee() throws SQLException, ClassNotFoundException {
+         employeeList = Controller_Employee.findAll();
+        tableModel9.setRowCount(0);
+            
+        for (Employee st : employeeList) {
+            tableModel9.addRow(new Object[]{tableModel9.getRowCount() + 1, st.getEmpID(),
+                st.getFarmID(), st.getEmpName(), st.getEmpAdd(), st.getEmpPhone(), 
+            st.getEmpEmail(), st.getStartDate(), st.getUserID()});
+        }
+    }
+        
+        //hien thi danh sach van chuyen
+    private void showTransport() throws SQLException, ClassNotFoundException {
+        transportList = Controller_Transport.findAll();
+        tableModel10.setRowCount(0);
+        String stt;
+
+        for (Transport tr : transportList) {
+            if (tr.getStatusTrans() == 1) {
+                stt = "Thành công";
+            } else {
+                stt = "Thất bại";
+            }
+            tableModel10.addRow(new Object[]{tableModel10.getRowCount() + 1, tr.getTransID(),
+                tr.getOrd_Ex_Num(), stt});
+        }
+    }
+    
   
     /**
      * This method is called from within the constructor to initialize the form.
@@ -1784,6 +1923,11 @@ public class AdminHome extends javax.swing.JFrame {
         btnthemKho.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         btnthemKho.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/plus.png"))); // NOI18N
         btnthemKho.setText("Thêm");
+        btnthemKho.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnthemKhoActionPerformed(evt);
+            }
+        });
 
         jTable8.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -1793,17 +1937,32 @@ public class AdminHome extends javax.swing.JFrame {
                 "STT", "Mã kho", "Trạng thái", "Loại"
             }
         ));
+        jTable8.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jTable8MousePressed(evt);
+            }
+        });
         jScrollPane8.setViewportView(jTable8);
 
         btnxoaKho.setBackground(new java.awt.Color(248, 211, 94));
         btnxoaKho.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         btnxoaKho.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/trash.png"))); // NOI18N
         btnxoaKho.setText("Xóa");
+        btnxoaKho.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnxoaKhoActionPerformed(evt);
+            }
+        });
 
         btnsuaKho.setBackground(new java.awt.Color(248, 211, 94));
         btnsuaKho.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         btnsuaKho.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/pencil.png"))); // NOI18N
         btnsuaKho.setText("Sửa");
+        btnsuaKho.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnsuaKhoActionPerformed(evt);
+            }
+        });
 
         jLabel51.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jLabel51.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -1825,7 +1984,7 @@ public class AdminHome extends javax.swing.JFrame {
         jLabel53.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel53.setText("Loại");
 
-        boxLoai.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Sản phẩm", "Nguyên liệu" }));
+        boxLoai.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Sản phẩm", "Vật liệu" }));
 
         btntimKho.setBackground(new java.awt.Color(248, 211, 94));
         btntimKho.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
@@ -1838,6 +1997,11 @@ public class AdminHome extends javax.swing.JFrame {
         });
 
         btn_resetStock.setText("Reset");
+        btn_resetStock.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_resetStockActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jpnCard8Layout = new javax.swing.GroupLayout(jpnCard8);
         jpnCard8.setLayout(jpnCard8Layout);
@@ -1899,8 +2063,8 @@ public class AdminHome extends javax.swing.JFrame {
                     .addComponent(btnsuaKho, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btn_resetStock))
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(650, Short.MAX_VALUE))
+                .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(362, Short.MAX_VALUE))
         );
 
         jpnCardLayout.add(jpnCard8, "jpnListStock");
@@ -1915,6 +2079,11 @@ public class AdminHome extends javax.swing.JFrame {
         btnthemNhanVien.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         btnthemNhanVien.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/plus.png"))); // NOI18N
         btnthemNhanVien.setText("Thêm");
+        btnthemNhanVien.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnthemNhanVienActionPerformed(evt);
+            }
+        });
 
         jTable9.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -1924,17 +2093,32 @@ public class AdminHome extends javax.swing.JFrame {
                 "STT", "Mã nhân viên", "Mã nông trại", "Tên nhân viên", "Địa chỉ", "Số điện thoại", "Email", "Ngày vào làm"
             }
         ));
+        jTable9.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jTable9MousePressed(evt);
+            }
+        });
         jScrollPane9.setViewportView(jTable9);
 
         btnxoaNhanVien.setBackground(new java.awt.Color(248, 211, 94));
         btnxoaNhanVien.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         btnxoaNhanVien.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/trash.png"))); // NOI18N
         btnxoaNhanVien.setText("Xóa");
+        btnxoaNhanVien.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnxoaNhanVienActionPerformed(evt);
+            }
+        });
 
         btnsuaNhanVien.setBackground(new java.awt.Color(248, 211, 94));
         btnsuaNhanVien.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         btnsuaNhanVien.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/pencil.png"))); // NOI18N
         btnsuaNhanVien.setText("Sửa");
+        btnsuaNhanVien.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnsuaNhanVienActionPerformed(evt);
+            }
+        });
 
         jLabel54.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jLabel54.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -1968,8 +2152,18 @@ public class AdminHome extends javax.swing.JFrame {
         btntimNhanVien.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         btntimNhanVien.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/transparency (1).png"))); // NOI18N
         btntimNhanVien.setText("Tìm");
+        btntimNhanVien.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btntimNhanVienActionPerformed(evt);
+            }
+        });
 
         btnResetNV.setText("Reset");
+        btnResetNV.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnResetNVActionPerformed(evt);
+            }
+        });
 
         jLabel67.setText("Password");
 
@@ -1977,9 +2171,9 @@ public class AdminHome extends javax.swing.JFrame {
 
         jLabel69.setText("User Role");
 
-        boxUserRole.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        boxUserRole.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Quản Lý", "Nhân Viên" }));
 
-        boxFarmID.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        boxFarmID.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "F1", "F2", "F3", "F4" }));
 
         javax.swing.GroupLayout jpnCard9Layout = new javax.swing.GroupLayout(jpnCard9);
         jpnCard9.setLayout(jpnCard9Layout);
@@ -2079,8 +2273,8 @@ public class AdminHome extends javax.swing.JFrame {
                     .addComponent(btnsuaNhanVien, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnResetNV))
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(623, Short.MAX_VALUE))
+                .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 322, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(328, Short.MAX_VALUE))
         );
 
         jpnCardLayout.add(jpnCard9, "jpnListEmp");
@@ -2096,9 +2290,14 @@ public class AdminHome extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Mã vận chuyển", "Mã đơn hàng", "Trạng thái"
+                "STT", "Mã vận chuyển", "Mã đơn hàng", "Trạng thái"
             }
         ));
+        jTable10.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jTable10MousePressed(evt);
+            }
+        });
         jScrollPane10.setViewportView(jTable10);
 
         jLabel70.setText("Mã vận chuyển");
@@ -2113,17 +2312,42 @@ public class AdminHome extends javax.swing.JFrame {
             }
         });
 
-        boxStatusTrans.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        boxStatusTrans.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Thành công", "Thất bại" }));
 
         btnAddTrans.setText("Thêm");
+        btnAddTrans.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddTransActionPerformed(evt);
+            }
+        });
 
         btnDelTrans.setText("Xóa");
+        btnDelTrans.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDelTransActionPerformed(evt);
+            }
+        });
 
         btnUpdateTrans.setText("Cập nhật");
+        btnUpdateTrans.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUpdateTransActionPerformed(evt);
+            }
+        });
 
         btnSearchTrans.setText("Tìm kiếm");
+        btnSearchTrans.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSearchTransActionPerformed(evt);
+            }
+        });
 
         btnResetTransport.setText("Reset");
+        btnResetTransport.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnResetTransportActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jpnCard10Layout = new javax.swing.GroupLayout(jpnCard10);
         jpnCard10.setLayout(jpnCard10Layout);
@@ -2191,8 +2415,8 @@ public class AdminHome extends javax.swing.JFrame {
                     .addComponent(btnSearchTrans)
                     .addComponent(btnResetTransport))
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane10, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(653, Short.MAX_VALUE))
+                .addComponent(jScrollPane10, javax.swing.GroupLayout.PREFERRED_SIZE, 322, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(358, Short.MAX_VALUE))
         );
 
         jpnCardLayout.add(jpnCard10, "jpnListTrans");
@@ -2593,19 +2817,51 @@ public class AdminHome extends javax.swing.JFrame {
        
     }//GEN-LAST:event_jbtManaDisActionPerformed
 
+    //trang quan ly kho
     private void jbtManaStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtManaStockActionPerformed
-        // TODO add your handling code here:
+
         cardlayout.show(jpnCardLayout, "jpnListStock");
+        
+                reset_stock();
+        try {
+            showStock();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jbtManaStockActionPerformed
 
+    //trang quan ly nhan vien
     private void jbtManaEmpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtManaEmpActionPerformed
-        // TODO add your handling code here:
         cardlayout.show(jpnCardLayout, "jpnListEmp");
+        
+                reset_Employee();
+        
+        try {
+            showEmployee();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jbtManaEmpActionPerformed
 
+    //trang quan ly van chuyen
     private void jbtManaTransActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtManaTransActionPerformed
-        // TODO add your handling code here:
         cardlayout.show(jpnCardLayout, "jpnListTrans");
+        
+        reset_transport();
+        try {
+            showTransport();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jbtManaTransActionPerformed
 
     private void jbtManaStatisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtManaStatisActionPerformed
@@ -2843,13 +3099,512 @@ public class AdminHome extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_btn_datlai_nongsan_tonActionPerformed
 
+    //tim kho
     private void btntimKhoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btntimKhoActionPerformed
         // TODO add your handling code here:
+                        try {
+            //List<Resources> resourcesList = Controller_Resource.findAll();
+            tableModel8.setRowCount(0);
+            String makho = textMaKho.getText();
+            stockList = Controller_Stock.SearchStock(makho);
+
+            for (Stock st : stockList) {
+                tableModel8.addRow(new Object[]{tableModel8.getRowCount() + 1, st.getStockID(),
+                    st.getStatusStock(), st.getType()});
+            }
+        } catch (ClassNotFoundException | NumberFormatException | SQLException e) {
+        }
     }//GEN-LAST:event_btntimKhoActionPerformed
 
     private void textOrd_Ex_NumActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textOrd_Ex_NumActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_textOrd_Ex_NumActionPerformed
+
+    //them kho
+    private void btnthemKhoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnthemKhoActionPerformed
+        String statusStock =   (String) boxTrangThai.getSelectedItem(); 
+        String typeStock =  (String) boxLoai.getSelectedItem();      
+        String idStock = textMaKho.getText();
+        Integer s1;
+        Integer s2;
+        
+        if(statusStock.equals("Đầy")){
+            s1=0;
+        }else{
+            s1=1;
+        }
+        
+        if(typeStock.equals("Sản phẩm")){
+            s2=1;
+        }else{
+            s2=2;
+        }
+        boolean check = false;
+        if(!idStock.equalsIgnoreCase("")){
+            JOptionPane.showMessageDialog(this, "Thêm kho mới không cần nhập mã kho!");
+        }else {
+            try {
+                Stock st = new Stock("", s1, s2);
+                check = Controller_Stock.insert(st);
+                if (check == true) {
+                    JOptionPane.showMessageDialog(this, "Thêm kho thành công!");
+                    showStock();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Thêm kho thất bại!",
+                            "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
+
+            } catch (SQLException ex) {
+                Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+    }//GEN-LAST:event_btnthemKhoActionPerformed
+
+    //xoa kho
+    private void btnxoaKhoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnxoaKhoActionPerformed
+        Object selected = boxTrangThai.getSelectedItem(); 
+        Object selected2 = boxLoai.getSelectedItem(); 
+      
+        String idStock = textMaKho.getText();
+        Integer statusStock ;//= Integer.parseInt(selected.toString());
+        Integer typeStock; //= Integer.parseInt(selected2.toString());
+
+
+        if(selected == "Chưa đầy"){
+            statusStock = 1;
+        } else {
+            statusStock = 0;
+        }
+        
+        if(selected2 == "Sản phẩm"){
+            typeStock = 1;
+        } else {
+            typeStock = 2;
+        }
+            try {
+                int n = JOptionPane.showConfirmDialog(
+                    this,
+                    "Bạn có muốn xóa không?",
+                    "Alert",
+                    JOptionPane.YES_NO_OPTION);
+                if (n == JOptionPane.YES_OPTION) {
+                    boolean delKho = Controller_Stock.delete(idStock);
+                    if (delKho==true) {
+                    JOptionPane.showMessageDialog(this, "Xóa kho thành công!");
+                    showStock();
+                    reset_stock();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Xóa kho thất bại!",
+                            "Lỗi", JOptionPane.ERROR_MESSAGE);
+                    showStock();
+                    reset_stock();
+                }
+            }
+            } catch (SQLException ex) {
+                int code = ex.getErrorCode();
+            String msg = ex.getMessage();
+            JOptionPane.showMessageDialog(this, msg, String.valueOf(code), JOptionPane.ERROR_MESSAGE);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        
+    }//GEN-LAST:event_btnxoaKhoActionPerformed
+
+    //sua kho
+    private void btnsuaKhoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnsuaKhoActionPerformed
+        String selected = (String) boxTrangThai.getSelectedItem(); 
+        String selected2 = (String) boxLoai.getSelectedItem(); 
+        
+        String idStock = textMaKho.getText();
+        Integer statusStock ;//= Integer.parseInt(selected.toString());
+        Integer typeStock; //= Integer.parseInt(selected2.toString());
+
+
+        if(selected == "Chưa Đầy"){
+            statusStock = 1;
+        } else {
+            statusStock = 0;
+        }
+        
+        if(selected2 == "Sản phẩm"){
+            typeStock = 1;
+        } else {
+            typeStock = 2;
+        }
+
+        boolean check = false;
+
+        try {
+            Stock st = new Stock(idStock, statusStock, typeStock);
+            check = Controller_Stock.update(st);
+            if (check == true) {
+                JOptionPane.showMessageDialog(this, "Sửa kho thành công!");
+            } else {
+                JOptionPane.showMessageDialog(this, "Sửa kho thất bại!",
+                        "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+            showStock();
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnsuaKhoActionPerformed
+
+    //reset kho
+    private void btn_resetStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_resetStockActionPerformed
+        try {
+            showStock();
+            reset_stock();
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btn_resetStockActionPerformed
+
+    //mouse press cua kho
+    private void jTable8MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable8MousePressed
+                int selectedIndex = jTable8.getSelectedRow();
+        if (selectedIndex >= 0) {
+             Stock st = stockList.get(selectedIndex);
+             int stt;
+             int type;
+            if(st.getStatusStock()==1){
+                stt=1;
+            }else{
+                stt=0;
+            }
+            if(st.getType()==1){
+                type=0;
+            }else{
+                type=1;
+            }
+            textMaKho.setText(st.getStockID());
+            boxTrangThai.setSelectedIndex(stt);
+            boxLoai.setSelectedIndex(type);
+        }
+    }//GEN-LAST:event_jTable8MousePressed
+ 
+    //mouse press cua nhan vien
+    private void jTable9MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable9MousePressed
+        int selectedIndex = jTable9.getSelectedRow();
+        if (selectedIndex >= 0) {
+             Employee emp = employeeList.get(selectedIndex);
+             
+             String farm_id = emp.getFarmID(); 
+             int stt = Integer.parseInt(farm_id.substring(1));
+
+            textmaNV.setText(emp.getEmpID());
+            boxFarmID.setSelectedIndex(stt-1);
+
+            texttenNV.setText(emp.getEmpName());
+            texttenNV.setText(emp.getEmpName());
+            textdiaChiNV.setText(emp.getEmpAdd());
+            textsdtNV.setText(emp.getEmpPhone());
+            textemailNV.setText(emp.getEmpEmail());
+            txtStartDate.setDate(emp.getStartDate());
+            
+            boxUserRole.setSelectedIndex(-1);
+            textuserName.setText("");
+            textpassWord.setText("");
+            }
+    }//GEN-LAST:event_jTable9MousePressed
+
+    //tim nhan vien
+    private void btntimNhanVienActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btntimNhanVienActionPerformed
+                                try {
+            //List<Resources> resourcesList = Controller_Resource.findAll(); 
+            tableModel9.setRowCount(0);
+            String manv = textmaNV.getText();
+            employeeList = Controller_Employee.SearchEmployee(manv);
+        //stmt.setDate(7, (java.sql.Date) emp.getStartDate());
+        
+            for (Employee emp : employeeList) {
+                tableModel9.addRow(new Object[]{tableModel9.getRowCount() + 1, emp.getEmpID(),
+                    emp.getFarmID(), emp.getEmpName(), emp.getEmpAdd(), emp.getEmpPhone()
+                , emp.getEmpEmail(), emp.getStartDate(), emp.getUserID()});
+            }
+        } catch (ClassNotFoundException | NumberFormatException | SQLException e) {
+        }
+    }//GEN-LAST:event_btntimNhanVienActionPerformed
+
+    //them nhan vien
+    private void btnthemNhanVienActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnthemNhanVienActionPerformed
+        String UserName = textuserName.getText();
+        String UserPassword = textpassWord.getText();
+        String UserRole = (String)boxUserRole.getSelectedItem();
+        String FarmID = (String)boxFarmID.getSelectedItem(); 
+        
+        String EmpID = textmaNV.getText();
+        String EmpName = texttenNV.getText();
+        String EmpAdd = textdiaChiNV.getText();
+        String EmpPhone = textsdtNV.getText();
+        String EmpEmail = textemailNV.getText();
+                  
+        java.util.Date utilStartDate = txtStartDate.getDate();
+        java.sql.Date start_date = new java.sql.Date(utilStartDate.getTime());
+
+        String urole;
+        if(UserRole.equals("Quản Lý")){
+            urole="UR1";
+        }else{
+            urole="UR2";
+        }
+
+        boolean check = false;
+        if (UserName.trim().equals("") || UserPassword.trim().equals("") || UserRole.trim().equals("")
+                || FarmID.trim().equals("") || EmpName.trim().equals("") || EmpAdd.trim().equals("")
+                || EmpPhone.trim().equals("") || EmpEmail.trim().equals("")) {
+            JOptionPane.showMessageDialog(null, "Thông tin không được để trống ");
+        }
+        if(!EmpID.equalsIgnoreCase("")){
+            JOptionPane.showMessageDialog(this, "Thêm nhân viên mới không cần nhập mã nhân viên!");
+        }else {
+            try {
+                User us = new User("", UserName, UserPassword,"", urole);
+                Employee emp = new Employee("", FarmID, EmpName,EmpAdd, EmpPhone, EmpEmail, start_date, "");
+                check = Controller_Employee.insert(us, emp);
+                if (check == true) {
+                    JOptionPane.showMessageDialog(this, "Thêm nhân viên thành công!");
+                    showEmployee();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Thêm nhân viên thất bại!",
+                            "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (SQLException ex) {
+                int code = ex.getErrorCode();
+                String msg = ex.getMessage();
+                JOptionPane.showMessageDialog(this, msg, String.valueOf(code), JOptionPane.ERROR_MESSAGE);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(AdminHome.class
+                        .getName()).log(Level.SEVERE, null, ex);
+            }
+            }
+    }//GEN-LAST:event_btnthemNhanVienActionPerformed
+
+    //xoa nhan vien
+    private void btnxoaNhanVienActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnxoaNhanVienActionPerformed
+        String EmpID = textmaNV.getText();
+        try {
+            int n = JOptionPane.showConfirmDialog(
+                    this,
+                    "Bạn có muốn xóa không?",
+                    "Alert",
+                    JOptionPane.YES_NO_OPTION);
+            if (n == JOptionPane.YES_OPTION) {
+                boolean delEmp = Controller_Employee.delete(EmpID);
+                if (delEmp==true) {
+                    JOptionPane.showMessageDialog(this, "Xóa nhân viên thành công!");
+                    showEmployee();
+                    reset_Employee();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Xóa nhân viên thất bại!",
+                            "Lỗi", JOptionPane.ERROR_MESSAGE);
+                    showEmployee();
+                    reset_Employee();
+                }
+            }
+        } catch (SQLException ex) {
+            int code = ex.getErrorCode();
+            String msg = ex.getMessage();
+            JOptionPane.showMessageDialog(this, msg, String.valueOf(code), JOptionPane.ERROR_MESSAGE);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnxoaNhanVienActionPerformed
+
+    //sua nhan vien
+    private void btnsuaNhanVienActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnsuaNhanVienActionPerformed
+        String FarmID = (String)boxFarmID.getSelectedItem(); 
+        String EmpName = texttenNV.getText();
+        String EmpID = textmaNV.getText();
+        String EmpAdd = textdiaChiNV.getText();
+        String EmpPhone = textsdtNV.getText();
+        String EmpEmail = textemailNV.getText();
+        java.util.Date utilStartDate = txtStartDate.getDate();
+        java.sql.Date start_date = new java.sql.Date(utilStartDate.getTime());
+
+        boolean check = false;
+
+        try {
+            Employee emp = new Employee(EmpID, FarmID, EmpName,EmpAdd, EmpPhone, EmpEmail, start_date, "");
+            check = Controller_Employee.update(emp);
+            if (check == true) {
+                JOptionPane.showMessageDialog(this, "Sửa nhân viên thành công!");
+            } else {
+                JOptionPane.showMessageDialog(this, "Sửa nhân viên thất bại!",
+                        "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+            showEmployee();
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnsuaNhanVienActionPerformed
+
+    //button reset cua nhan vien
+    private void btnResetNVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetNVActionPerformed
+                try {
+            showEmployee();
+            reset_Employee();
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnResetNVActionPerformed
+
+    //mouse pressed cua bang quan ly Transport
+    private void jTable10MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable10MousePressed
+        int selectedIndex = jTable10.getSelectedRow();
+        if (selectedIndex >= 0) {
+             Transport tr = transportList.get(selectedIndex);
+             int stt;
+
+             if(tr.getStatusTrans()==0){
+                 stt = 1;
+             }
+             else {
+                 stt = 0;
+             }
+            textTransID.setText(tr.getTransID());
+            boxStatusTrans.setSelectedIndex(stt);
+
+            textOrd_Ex_Num.setText(tr.getOrd_Ex_Num());
+            }
+    }//GEN-LAST:event_jTable10MousePressed
+
+    //them van chuyen
+    private void btnAddTransActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddTransActionPerformed
+        Object selected = boxStatusTrans.getSelectedItem(); 
+        
+        String idTrans = textTransID.getText();
+        String OrdExNum = textOrd_Ex_Num.getText();
+        Integer statusTrans ;//= Integer.parseInt(selected.toString());
+
+        if(selected == "Thành công"){
+            statusTrans = 1;
+        } else {
+            statusTrans = 0;
+        }
+        boolean check = false;
+        if (!idTrans.equalsIgnoreCase("")) {
+            JOptionPane.showMessageDialog(this, "Không cần nhập mã vận chuyển!");
+        } else if(!OrdExNum.equalsIgnoreCase("")){
+            JOptionPane.showMessageDialog(this, "Không cần nhập mã đơn hàng!");
+        }
+        else { 
+            try {
+                Transport tr = new Transport("", OrdExNum, statusTrans);
+                check = Controller_Transport.insert(tr);
+                if (check == true) {
+                    JOptionPane.showMessageDialog(this, "Thêm vận chuyển thành công!");
+                    showTransport();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Thêm vận chuyển thất bại!",
+                            "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
+
+            } catch (SQLException ex) {
+                Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_btnAddTransActionPerformed
+
+    //xoa van chuyen
+    private void btnDelTransActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDelTransActionPerformed
+        String ttransid = textTransID.getText();     
+        try {
+            int n = JOptionPane.showConfirmDialog(
+                    this,
+                    "Bạn có muốn xóa không?",
+                    "Alert",
+                    JOptionPane.YES_NO_OPTION);
+            if (n == JOptionPane.YES_OPTION) {
+               boolean delTrans = Controller_Transport.delete(ttransid);
+                if (delTrans==true) {
+                    JOptionPane.showMessageDialog(this, "Xóa vận chuyển thành công!");
+                    showTransport();
+                    reset_transport();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Xóa vận chuyển thất bại!",
+                            "Lỗi", JOptionPane.ERROR_MESSAGE);
+                    showTransport();
+                    reset_transport();
+                }
+            }
+        } catch (SQLException ex) {
+            int code = ex.getErrorCode();
+            String msg = ex.getMessage();
+            JOptionPane.showMessageDialog(this, msg, String.valueOf(code), JOptionPane.ERROR_MESSAGE);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnDelTransActionPerformed
+
+    //cap nhat van chuyen
+    private void btnUpdateTransActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateTransActionPerformed
+        String selected = (String) boxStatusTrans.getSelectedItem();         
+        String idTrans = textTransID.getText();
+        String idOdr_Ex = textOrd_Ex_Num.getText();
+        Integer statusTrans ;//= Integer.parseInt(selected.toString());
+
+        if(selected == "Thành công"){
+            statusTrans = 1;
+        } else {
+            statusTrans = 0;
+        }
+        boolean check = false;
+        try {
+            Transport tr = new Transport(idTrans,idOdr_Ex,statusTrans);
+            check = Controller_Transport.update(tr);
+            if (check == true) {
+                JOptionPane.showMessageDialog(this, "Sửa vận chuyển thành công!");
+            } else {
+                JOptionPane.showMessageDialog(this, "Sửa vận chuyển thất bại!",
+                        "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+            showTransport();
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnUpdateTransActionPerformed
+
+    //tim kiem van chuyen
+    private void btnSearchTransActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchTransActionPerformed
+            try {
+            tableModel10.setRowCount(0);
+            String mavc = textTransID.getText();
+            transportList = Controller_Transport.SearchTrans(mavc);
+
+            for (Transport ts : transportList) {
+                tableModel10.addRow(new Object[]{tableModel10.getRowCount() + 1, ts.getTransID(),
+                    ts.getOrd_Ex_Num(), ts.getStatusTrans()});
+            }
+        } catch (ClassNotFoundException | NumberFormatException | SQLException e) {
+        }
+    }//GEN-LAST:event_btnSearchTransActionPerformed
+
+    //button reset van chuyen
+    private void btnResetTransportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetTransportActionPerformed
+        try {
+            showTransport();
+            reset_transport();
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnResetTransportActionPerformed
 
     /**
      * @param args the command line arguments
