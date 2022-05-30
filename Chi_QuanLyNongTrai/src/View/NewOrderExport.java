@@ -331,7 +331,8 @@ public class NewOrderExport extends javax.swing.JFrame {
 
                 ArrayList<Product> arrLProPurchase = ChooseProductPage.luuThongTinCTHD();
 
-                // them danh sach chon mua vao bang CTHD
+                
+                // them du lieu tu bang chon mua san pham vao bang CTHD
                 for (int v = 0; v < arrLProPurchase.size(); v++) {
                     String tenSP = arrLProPurchase.get(v).getProName();
                     String maSP;
@@ -341,6 +342,7 @@ public class NewOrderExport extends javax.swing.JFrame {
 
                         Order_Details_Ex newCTHD = new Order_Details_Ex(maHD, maSP, soLuong);
                         C_Order_Details_Ex.themCTHD(newCTHD);
+                        
                     } catch (ClassNotFoundException ex) {
                         Logger.getLogger(NewOrderExport.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -366,7 +368,9 @@ public class NewOrderExport extends javax.swing.JFrame {
                 if (txtFTenKH.getText().equals("")) {
                     JOptionPane.showMessageDialog(this, "Nhập họ tên và số điện thoại khách hàng là bắt buộc!");
                 } 
+                
                 else {
+                    // them moi khach vang lai vao DB va tra ve maKH
                     String maKH = C_NewOrderExport.layMaKH(txtFTenKH.getText(), txtFSdtKH.getText());
 
                     Order_Export newOrder = new Order_Export(dateOrder, maKH, preTotal, disID, total, shipCode);
@@ -454,7 +458,7 @@ public class NewOrderExport extends javax.swing.JFrame {
 
     private void jPanel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseClicked
         // TODO add your handling code here:
-        jPanel1.requestFocus(true);
+        jPanel1.requestFocus(true);     //bat su kien khi nguoi dung click vao bat ky cho nao khac tren giao dien
     }//GEN-LAST:event_jPanel1MouseClicked
 
     private void jCheckBoxKHTVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxKHTVActionPerformed
@@ -462,13 +466,14 @@ public class NewOrderExport extends javax.swing.JFrame {
         txtFTenKH.setEditable(false);
         txtFDiaChi.setEditable(false);
 
+// Bat su kien khi nguoi dung nhap xong so dien thoai va click bat cu diem nao tren giao dien
         txtFSdtKH.addFocusListener(new FocusListener() {
             @Override
             public void focusLost(FocusEvent evt) {
                 String sdt = txtFSdtKH.getText();
 
                 try {
-                    info_kh = C_NewOrderExport.timKH(sdt);
+                    info_kh = C_NewOrderExport.timKH(sdt);      // thuc hien tim kiem khach hang thanh vien
 
                 } catch (SQLException ex) {
                     int code = ex.getErrorCode();
@@ -479,11 +484,12 @@ public class NewOrderExport extends javax.swing.JFrame {
                     Logger.getLogger(NewOrderExport.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 
-
+// Neu khong tim duoc khach hang thanh vien, setEditable lai cac textField txtFTenKH, txtFDiaChi
                 if (info_kh[1] == null || info_kh[2] == null) {
                     txtFTenKH.setEditable(true);
                     txtFDiaChi.setEditable(true);
-                } else {
+                } 
+                else {                                                               //Tim duoc khach hang thanh vien
                     txtFTenKH.setText(info_kh[1]);
                     txtFDiaChi.setText(info_kh[2]);
                     txtFTenKH.setEditable(false);
@@ -493,7 +499,7 @@ public class NewOrderExport extends javax.swing.JFrame {
                 }
 
                 try {
-                    show_Combobox_DisCode(sdt, LocalDate.now());
+                    show_Combobox_DisCode(sdt, LocalDate.now());        // Load code khuyen mai vao combobox
                 } catch (SQLException ex) {
                     Logger.getLogger(NewOrderExport.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (ClassNotFoundException ex) {
@@ -512,8 +518,9 @@ public class NewOrderExport extends javax.swing.JFrame {
     private void jCheckBoxVanChuyenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxVanChuyenActionPerformed
         // TODO add your handling code here:
         try {
-            // TODO add your handling code here:
+            // Goi ham tao va tra ve mot ma van chuyen tu tang o DB
             shipCode = C_NewOrderExport.taoMaVanChuyen();
+            
         } catch (SQLException ex) {
             Logger.getLogger(NewOrderExport.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ClassNotFoundException ex) {

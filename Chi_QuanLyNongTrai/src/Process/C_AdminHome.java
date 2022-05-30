@@ -65,44 +65,41 @@ public class C_AdminHome {
         
         ArrayList<Order_Export> arrLInvoice = new ArrayList<>();
         ResultSet rs;
-        
+
         Connection conn = (Connection) ConnectionUtils.getMyConnection();
         CallableStatement stmt = conn.prepareCall("{call find_order_export (?, ?)}");
-        
+
         stmt.setString(1, maHD);
         stmt.registerOutParameter(2, java.sql.Types.REF_CURSOR);
         stmt.execute();
-        
-       rs = (ResultSet) stmt.getObject(2);
-       while (rs.next()) {
-           String ord_Ex_Num = rs.getString("ord_Ex_Num");
-           Date dateOrdered = rs.getDate("dateOrdered");
-           String transID = rs.getString("transID");
-           String cusID = rs.getString("cusID");
-           double preTotal = rs.getDouble("preTotal");
-           String disID = rs.getString("disID");
+
+        rs = (ResultSet) stmt.getObject(2);
+        while (rs.next()) {
+            String ord_Ex_Num = rs.getString("ord_Ex_Num");
+            Date dateOrdered = rs.getDate("dateOrdered");
+            String transID = rs.getString("transID");
+            String cusID = rs.getString("cusID");
+            double preTotal = rs.getDouble("preTotal");
+            String disID = rs.getString("disID");
             double total = rs.getDouble("orderTotal");
             String checkTrans = rs.getString("statusTrans");
 
-            if (rs.getString("statusTrans") == null) {
-                checkTrans = "";
-            }
-
+            // Chuyen doi kieu du lieu 0, 1 va null  cua DB thanh kieu chuoi de hieu
             if (transID != null) {
-                if (checkTrans.equals("1")) {
-                    checkTrans = "Thành công";
-                } else if (checkTrans.equals("0")) {
-                    checkTrans = "Thất bại";
-                } else {
-                    checkTrans = "";
-                }
-            }
+                    if (checkTrans.equals("1")) {
+                        checkTrans = "Thành công";
+                    } else if (checkTrans.equals("0")) {
+                        checkTrans = "Thất bại";
+                    } else {
+                        checkTrans = "";
+                    }
+            } else 
+                checkTrans = "";
+            
+
             arrLInvoice.add(new Order_Export(ord_Ex_Num, dateOrdered, cusID, preTotal, disID, total, transID, checkTrans));
-        
-       }
-              
-        
-        
+        }
+
         return arrLInvoice;
     }
     

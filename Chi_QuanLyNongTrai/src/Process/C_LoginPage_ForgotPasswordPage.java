@@ -46,6 +46,7 @@ public class C_LoginPage_ForgotPasswordPage {
         String id = "";
         ArrayList<Sys_User> arrListUser = listUser();
 
+        // Kiem tra userName va password nhap vao co ton tai. Neu co tra ve userID cua nguoi nay
         for (Sys_User x : arrListUser) {
             if (x.getUserName().equals(userName) && x.getUserPassword().equals(password)) {
                 id = x.getUserRole();
@@ -60,6 +61,7 @@ public class C_LoginPage_ForgotPasswordPage {
         ResultSet rs1;
         ResultSet rs2;
 
+        //Duyet qua danh sach email cua khach hang de tim kiem email nhap vao
         Connection conn = (Connection) ConnectionUtils.getMyConnection();
         CallableStatement stmt1 = conn.prepareCall("{call get_cusEmail_userID(?)}");
         stmt1.registerOutParameter(1, java.sql.Types.REF_CURSOR);
@@ -72,6 +74,7 @@ public class C_LoginPage_ForgotPasswordPage {
             }
         }
 
+        //Email nhap vao khong phai cua khach hang, tim trong danh sach email nhan vien
         CallableStatement stmt2 = conn.prepareCall("{call get_empEmail_userID(?)}");
         stmt2.registerOutParameter(1, java.sql.Types.REF_CURSOR);
         stmt2.execute();
@@ -83,7 +86,7 @@ public class C_LoginPage_ForgotPasswordPage {
             }
         }
 
-        return null;
+        return null;        //email nhap vao khong ton tai trong DB
     }
 
 

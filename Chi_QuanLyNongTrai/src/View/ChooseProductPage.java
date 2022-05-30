@@ -63,6 +63,11 @@ public class ChooseProductPage extends javax.swing.JFrame {
                 }
                 panelHolder[m][n].getjLabelTenSP().setText(arrLProductDB.get(k).getProName());
                 panelHolder[m][n].getjLabelSoLuong().setText(arrLProductDB.get(k).getQuantity().toString());
+                
+                // Neu so luong nong san ton kho la 0 thi vo hieu hoa nut +
+                if (panelHolder[m][n].getjLabelSoLuong().getText().equals("0"))
+                    panelHolder[m][n].jButtonThem.setEnabled(false);
+                
                 panelHolder[m][n].getjLabelGia().setText("" + arrLProductDB.get(k).getProPrice());
                 jSanPham.add(panelHolder[m][n]);
                 k += 1;
@@ -86,7 +91,9 @@ public class ChooseProductPage extends javax.swing.JFrame {
             }
 
         }
+        
 
+// code khoi tao cua JNode()
     private void initComponents() {
 
         jLabelTenSP = new javax.swing.JLabel();
@@ -212,6 +219,8 @@ public class ChooseProductPage extends javax.swing.JFrame {
                     for (int col = 0; col < j; col++) {
                         if (panelHolder[row][col].jButtonThem == evt.getSource()) {
                             clicked[row][col]++;
+                            
+                            //khi nhan nut them 1 san pham, so luong ton kho cua san pham giam di 1
                             int soLuongCon = Integer.parseInt(panelHolder[row][col].jLabelSoLuong.getText());
                             soLuongCon--;
                             panelHolder[row][col].jLabelSoLuong.setText(String.valueOf(soLuongCon));
@@ -245,6 +254,8 @@ public class ChooseProductPage extends javax.swing.JFrame {
                 for (int col = 0; col < j; col++) {
                     if (panelHolder[row][col].jButtonGiam == evt.getSource()) {
                         clicked[row][col]--;
+                        
+                        //khi nhan nut giam 1 san pham, so luong ton kho cua san pham tang them 1
                         int soLuongCon = Integer.parseInt(panelHolder[row][col].jLabelSoLuong.getText());
                         soLuongCon++;
                         panelHolder[row][col].jLabelSoLuong.setText(String.valueOf(soLuongCon));
@@ -253,7 +264,7 @@ public class ChooseProductPage extends javax.swing.JFrame {
                             tableModel.removeRow(rowList.indexOf(rowPosJTable));
                             rowList.remove((Object) rowPosJTable);
                            
-                            
+                            // khong cho nguoi dung nhan nut - khi so luong chon mua cua 1 JNode giam ve 0
                             jButtonGiam.setEnabled(false);
                             
                         } else {
@@ -573,6 +584,10 @@ public class ChooseProductPage extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    
+    /*
+    * Ham luu thong tin cac san pham va so luong mua hang de them vao bang CTHD trong DB
+    */
     public static ArrayList<Product> luuThongTinCTHD() {
             ArrayList<Product> arrLProPurchase = new ArrayList<>();
             String id = "";
@@ -594,7 +609,6 @@ public class ChooseProductPage extends javax.swing.JFrame {
 
     private void jButtonXacNhanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonXacNhanActionPerformed
         // TODO add your handling code here:
-        
         this.setVisible(false);
         new NewOrderExport(total).setVisible(true);
     }//GEN-LAST:event_jButtonXacNhanActionPerformed
