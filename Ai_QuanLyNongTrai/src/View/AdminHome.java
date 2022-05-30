@@ -105,16 +105,16 @@ public class AdminHome extends javax.swing.JFrame {
         setCellsAlignment(jTable10, SwingConstants.CENTER);
        
         tableModel = (DefaultTableModel) tableNongTrai.getModel();
-        setCell(tableNongTrai, SwingConstants.CENTER);
+        setCellsAlignment(tableNongTrai, SwingConstants.CENTER);
         //Set table cho quan li nha cung cap
         tableModel1 = (DefaultTableModel) tableSup.getModel();
-        setCell(tableSup, SwingConstants.CENTER);
+        setCellsAlignment(tableSup, SwingConstants.CENTER);
         //Sel table cho quan li khach hang
         tableModel2 = (DefaultTableModel) tableKH.getModel();
-        setCell(tableKH, SwingConstants.CENTER);
+        setCellsAlignment(tableKH, SwingConstants.CENTER);
         //Set table chp quan li ma khuyen mai
         tableModel3 = (DefaultTableModel) tableKM.getModel();
-        setCell(tableKM, SwingConstants.CENTER);
+        setCellsAlignment(tableKM, SwingConstants.CENTER);
 
     }
     
