@@ -14,20 +14,21 @@ import java.util.logging.Logger;
 import javax.lang.model.util.Types;
 import java.sql.*;
 
-
 /**
  *
- * @author Lenovo
+ * @author diuai
  */
 public class Ai_QuanLyNongTrai {
 
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args){
+    public static void main(String[] args) {
         // TODO code application logic here
-     
-       }
-      }  
-    
+        // TODO code application logic here
+        java.awt.EventQueue.invokeLater(() -> {
+            new AdminHome().setVisible(true);
+        });
 
+    }
+}

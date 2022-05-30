@@ -1,5 +1,13 @@
 package View;
 
+import Model.Customer;
+import Model.Discount;
+import Model.Farm;
+import Model.Supplier;
+import Process.Customer_Controller;
+import Process.Discount_Controller;
+import Process.Farm_Controller;
+import Process.Supplier_Controller;
 import java.awt.CardLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -38,21 +46,144 @@ import javax.swing.table.TableModel;
  */
 public class AdminHome extends javax.swing.JFrame {
 
-
     /**
      * Creates new form AdminHome
      */
+    DefaultTableModel tableModel;
+    DefaultTableModel tableModel1;
+    DefaultTableModel tableModel2;
+    DefaultTableModel tableModel3;
+    //Bien list chung cho nong trai
+    List<Farm> listFarm = new ArrayList<>();
+    //Bien list chung cho Nha cung cap
+    List<Supplier> listSup = new ArrayList<>();
+    //Bien list chung cho Khach hang
+    List<Customer> listCus = new ArrayList<>();
+    // Bien list chung cho khuyen mai
+    List<Discount> listDis = new ArrayList<>();
+
     CardLayout cardlayout;
 
     public AdminHome() {
         initComponents();
         cardlayout = (CardLayout) jpnCardLayout.getLayout();
         //Set table cho quan li nong trai
-       
+        tableModel = (DefaultTableModel) tableNongTrai.getModel();
+        setCell(tableNongTrai, SwingConstants.CENTER);
+        //Set table cho quan li nha cung cap
+        tableModel1 = (DefaultTableModel) tableSup.getModel();
+        setCell(tableSup, SwingConstants.CENTER);
+        //Sel table cho quan li khach hang
+        tableModel2 = (DefaultTableModel) tableKH.getModel();
+        setCell(tableKH, SwingConstants.CENTER);
+        //Set table chp quan li ma khuyen mai
+        tableModel3 = (DefaultTableModel) tableKM.getModel();
+        setCell(tableKM, SwingConstants.CENTER);
+
+    }
+    //Can giua cac noi dung trong bang
+
+    public static void setCell(JTable table, int alignment) {
+        DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
+        rightRenderer.setHorizontalAlignment(alignment);
+
+        TableModel tableModel = table.getModel();
+        for (int columnIndex = 0; columnIndex < tableModel.getColumnCount(); columnIndex++) {
+            table.getColumnModel().getColumn(columnIndex).setCellRenderer(rightRenderer);
+        }
     }
 
     //Reset lai cac text field trang cua trang nong trai
-  
+    public void reset_Farm() {
+        textMaNT.setText("");
+        textMaNT.setEditable(true);
+        texttenNT.setText("");
+        textdiaChiNT.setText("");
+
+    }
+
+    //Reset lai cac text field trang cua trang nha cung cap
+    public void reset_Sup() {
+        textmaNCC.setText("");
+        textmaNCC.setEditable(true);
+        texttenNCC.setText("");
+        textsdtNCC.setText("");
+        textdiaChiNCC.setText("");
+        textemailNCC.setText("");
+    }
+
+    //Reset lai cac text field trang cua trang khach hang
+    public void reset_Cus() {
+        textmaKH.setText("");
+        textmaKH.setEditable(true);
+        texttenKH.setText("");
+        cbxgenderKH.setSelectedIndex(0);
+        dateBirthKH.setDateFormatString("");
+        textdiaChiKH.setText("");
+        textsdtKH.setText("");
+        textemailKH.setText("");
+        cbxloaiKH.setSelectedIndex(0);
+        texttienTL.setText("");
+        textmaUser.setText("");
+    }
+
+    //Reset lai cac text field cua trang ma khuyen mai
+    public void reset_Dis() {
+        textmaKM.setText("");
+        textmaCode.setText("");
+        textgiaTriKM.setText("");
+        cbxloaiMaKM.setSelectedIndex(0);
+        date_start_dis.setDateFormatString("");
+        date_end_dis.setDateFormatString("");
+    }
+    // Ham hien thi danh sach nong trai
+
+    private void showFarm() throws SQLException, ClassNotFoundException {
+
+        listFarm = Farm_Controller.findAllFarm();
+        tableModel.setRowCount(0);
+        for (Farm fa : listFarm) {
+            tableModel.addRow(new Object[]{tableModel.getRowCount() + 1, fa.getFarmID(),
+                fa.getFarmName(), fa.getFarmAdd()});
+        }
+
+    }
+
+    //Hien thi danh sach nha cung cap
+    private void showSup() throws SQLException, ClassNotFoundException {
+        listSup = Supplier_Controller.findAllSup();
+        tableModel1.setRowCount(0);
+        for (Supplier sup : listSup) {
+            tableModel1.addRow(new Object[]{tableModel1.getRowCount() + 1, sup.getSupID(),
+                sup.getSupName(), sup.getSupPhone(), sup.getSupAdd(), sup.getSupEmail()});
+        }
+    }
+
+    //Hien thi danh sach khach hang
+    private void showCus() throws SQLException, ClassNotFoundException {
+        listCus = Customer_Controller.findAllCus();
+
+        tableModel2.setRowCount(0);
+        for (Customer cus : listCus) {
+            tableModel2.addRow(new Object[]{tableModel2.getRowCount() + 1, cus.getCusID(),
+                cus.getCusName(), cus.getGender(), cus.getDateOfBirth(), cus.getCusAdd(),
+                cus.getCusPhone(), cus.getCusEmail(), cus.getCusType(), cus.getAccrued_Money(),
+                cus.getUserID()});
+        }
+    }
+
+    //Hien thi danh sach ma khuyen mai
+    private void showDis() throws SQLException, ClassNotFoundException {
+
+        listDis = Discount_Controller.findAllDis();
+        tableModel3.setRowCount(0);
+        for (Discount dis : listDis) {
+            tableModel3.addRow(new Object[]{tableModel3.getRowCount() + 1, dis.getDisID(),
+                dis.getDisCode(), dis.getValue(), dis.getCusType(), dis.getStartDate(), dis.getEndDate(), dis.getStatus()
+            });
+        }
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -794,7 +925,15 @@ public class AdminHome extends javax.swing.JFrame {
             new String [] {
                 "STT", "Mã nông trại", "Tên nông trại", "Địa chỉ"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         tableNongTrai.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tableNongTraiMouseClicked(evt);
@@ -1189,7 +1328,15 @@ public class AdminHome extends javax.swing.JFrame {
             new String [] {
                 "STT", "Mã nhà cung cấp", "Tên nhà cung cấp", "Số điện thoại", "Địa chỉ", "Email"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         tableSup.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tableSupMouseClicked(evt);
@@ -1364,9 +1511,16 @@ public class AdminHome extends javax.swing.JFrame {
             Class[] types = new Class [] {
                 java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Long.class, java.lang.Object.class, java.lang.Object.class, java.lang.Double.class, java.lang.Object.class
             };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false, false, false, false, false
+            };
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
             }
         });
         tableKH.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -1601,9 +1755,16 @@ public class AdminHome extends javax.swing.JFrame {
             Class[] types = new Class [] {
                 java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Float.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
             };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false, false
+            };
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
             }
         });
         tableKM.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -2096,9 +2257,17 @@ public class AdminHome extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Mã vận chuyển", "Mã đơn hàng", "Trạng thái"
+                "STT", "Mã vận chuyển", "Mã đơn hàng", "Trạng thái"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane10.setViewportView(jTable10);
 
         jLabel70.setText("Mã vận chuyển");
@@ -2559,7 +2728,14 @@ public class AdminHome extends javax.swing.JFrame {
     private void jbtManaFarmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtManaFarmActionPerformed
         // TODO add your handling code here:
         cardlayout.show(jpnCardLayout, "jpnListFarm");
-        
+        try {
+            showFarm();
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }//GEN-LAST:event_jbtManaFarmActionPerformed
 
     private void jbtManaOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtManaOrderActionPerformed
@@ -2578,19 +2754,40 @@ public class AdminHome extends javax.swing.JFrame {
     private void jbtManaSupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtManaSupActionPerformed
         // TODO add your handling code here:
         cardlayout.show(jpnCardLayout, "jpnListSup");
-        
+        try {
+            showSup();
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }//GEN-LAST:event_jbtManaSupActionPerformed
 
     private void jbtManaCusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtManaCusActionPerformed
         // TODO add your handling code here:
         cardlayout.show(jpnCardLayout, "jpnListCus");
-        
+        try {
+            showCus();
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }//GEN-LAST:event_jbtManaCusActionPerformed
 
     private void jbtManaDisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtManaDisActionPerformed
         // TODO add your handling code here:
         cardlayout.show(jpnCardLayout, "jpnListDis");
-       
+        try {
+            showDis();
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }//GEN-LAST:event_jbtManaDisActionPerformed
 
     private void jbtManaStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtManaStockActionPerformed
@@ -2615,12 +2812,67 @@ public class AdminHome extends javax.swing.JFrame {
 
     private void btnthemNongTraiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnthemNongTraiActionPerformed
         // TODO add your handling code here: 
-      
+        boolean check = false;
+        String maNT = textMaNT.getText();
+        String tenNT = texttenNT.getText();
+        String diachiNT = textdiaChiNT.getText();
+
+        if (tenNT.isEmpty() || diachiNT.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin");
+        } else {
+            if (!maNT.equalsIgnoreCase("")) {
+                JOptionPane.showMessageDialog(this, "Không cần nhập mã nông trại khi thêm mới!");
+            } else {
+                try {
+
+                    Farm fa = new Farm("", tenNT, diachiNT);
+                    check = Farm_Controller.insertFarm(fa);
+
+                    if (check == true) {
+
+                        JOptionPane.showMessageDialog(this, "Thêm thành công.");
+                        showFarm();
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Thêm không thành công",
+                                "Lỗi đăng ký", JOptionPane.ERROR_MESSAGE);
+                    }
+                    reset_Farm();
+
+                } catch (SQLException ex) {
+                    int code = ex.getErrorCode();
+                    String msg = ex.getMessage();
+                    JOptionPane.showMessageDialog(this, msg, String.valueOf(code), JOptionPane.ERROR_MESSAGE);
+
+                } catch (ClassNotFoundException ex) {
+                    Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+            }
+        }
 
     }//GEN-LAST:event_btnthemNongTraiActionPerformed
 
     private void btnxoaNongTraiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnxoaNongTraiActionPerformed
-      
+        String farmid = textMaNT.getText();
+        try {
+            int n = JOptionPane.showConfirmDialog(
+                    this,
+                    "Bạn có chắc chắn muốn xóa không ?",
+                    "Alert",
+                    JOptionPane.YES_NO_OPTION);
+            if (n == JOptionPane.YES_OPTION) {
+                Farm_Controller.deleteFarm(farmid);
+                showFarm();
+                reset_Farm();
+            }
+
+        } catch (SQLException ex) {
+            int code = ex.getErrorCode();
+            String msg = ex.getMessage();
+            JOptionPane.showMessageDialog(this, msg, String.valueOf(code), JOptionPane.ERROR_MESSAGE);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnxoaNongTraiActionPerformed
 
     private void btnxoaVLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnxoaVLActionPerformed
@@ -2629,12 +2881,60 @@ public class AdminHome extends javax.swing.JFrame {
 
     private void btnxoaNCCActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnxoaNCCActionPerformed
         // TODO add your handling code here:
-        
+        String supID = textmaNCC.getText();
+        try {
+            int n = JOptionPane.showConfirmDialog(
+                    this,
+                    "Bạn có chắc chắn muốn xóa không ?",
+                    "Alert",
+                    JOptionPane.YES_NO_OPTION);
+            if (n == JOptionPane.YES_OPTION) {
+                Supplier_Controller.deleteSup(supID);
+                showSup();
+                reset_Sup();
+            }
+
+        } catch (SQLException ex) {
+            int code = ex.getErrorCode();
+            String msg = ex.getMessage();
+            JOptionPane.showMessageDialog(this, msg, String.valueOf(code), JOptionPane.ERROR_MESSAGE);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnxoaNCCActionPerformed
 
     private void btnsuaNCCActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnsuaNCCActionPerformed
         // TODO add your handling code here:
-       
+        boolean check = false;
+        String maNCC = textmaNCC.getText();
+        String tenNCC = texttenNCC.getText();
+        Long sdtNCC = Long.parseLong(textsdtNCC.getText());
+        String diachiNCC = textdiaChiNCC.getText();
+        String emailNCC = textemailNCC.getText();
+        try {
+            if (tenNCC.isEmpty() || diachiNCC.isEmpty() || emailNCC.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin");
+            } else {
+                Supplier sup = new Supplier(maNCC, tenNCC, sdtNCC, diachiNCC, emailNCC);
+                check = Supplier_Controller.updateSup(sup);
+                if (check == true) {
+
+                    JOptionPane.showMessageDialog(this, "Sửa thành công.");
+                    showSup();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Sửa không thành công",
+                            "Lỗi đăng ký", JOptionPane.ERROR_MESSAGE);
+                }
+                reset_Sup();
+            }
+        } catch (SQLException ex) {
+            int code = ex.getErrorCode();
+            String msg = ex.getMessage();
+            JOptionPane.showMessageDialog(this, msg, String.valueOf(code), JOptionPane.ERROR_MESSAGE);
+
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
     }//GEN-LAST:event_btnsuaNCCActionPerformed
 
@@ -2647,7 +2947,63 @@ public class AdminHome extends javax.swing.JFrame {
 
     private void btnthemKHActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnthemKHActionPerformed
         // TODO add your handling code here:
-        
+        boolean check = false;
+        String maKH = textmaKH.getText();
+        String tenKH = texttenKH.getText();
+        String gioitinhKH = (String) cbxgenderKH.getSelectedItem();
+        DateFormat dateformat = new SimpleDateFormat("dd-MMM-yy");
+        String ngay = dateformat.format(dateBirthKH.getDate());
+        String diachiKH = textdiaChiKH.getText();
+        long sdtKH = 0;
+        String emailKH = textemailKH.getText();
+        String loaiKH = (String) cbxloaiKH.getSelectedItem();
+        double tienTL = 0;
+        String maUS = textmaUser.getText();
+        if (tenKH.isEmpty() || emailKH.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập tên và email khách hàng");
+        } else {
+            if (!texttienTL.getText().equalsIgnoreCase("")) {
+                tienTL = Double.parseDouble(texttienTL.getText());
+            }
+            if (!textsdtKH.getText().equalsIgnoreCase("")) {
+                sdtKH = Long.parseLong(textsdtKH.getText());
+            }
+//        if (tenNT.isEmpty() || diachiNT.isEmpty()) {
+//            JOptionPane.showMessageDialog(this, "Vui long nhap ten va dia chi");
+//        }
+            if (!maKH.equalsIgnoreCase("")) {
+                JOptionPane.showMessageDialog(this, "Không cần nhập mã khách hàng khi thêm mới!");
+            } else {
+                try {
+                    //Date ngaysinhKH =(Date) dateformat.parse(ngay);
+                    //Date ngaysinhKH=dateformat.parse(dateBirthKH.getDate());
+                    Customer cus;
+                    cus = new Customer("", tenKH, gioitinhKH, dateformat.parse(ngay), diachiKH, sdtKH, emailKH, loaiKH, tienTL, maUS);
+                    check = Customer_Controller.insertCus(cus);
+
+                    if (check == true) {
+
+                        JOptionPane.showMessageDialog(this, "Thêm thành công.");
+                        showCus();
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Thêm thành công",
+                                "Lỗi đăng ký", JOptionPane.ERROR_MESSAGE);
+                    }
+                    reset_Cus();
+
+                } catch (SQLException ex) {
+                    int code = ex.getErrorCode();
+                    String msg = ex.getMessage();
+                    JOptionPane.showMessageDialog(this, msg, String.valueOf(code), JOptionPane.ERROR_MESSAGE);
+
+                } catch (ClassNotFoundException ex) {
+                    Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (ParseException ex) {
+                    Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+            }
+        }
 
     }//GEN-LAST:event_btnthemKHActionPerformed
 
@@ -2691,12 +3047,55 @@ public class AdminHome extends javax.swing.JFrame {
     }//GEN-LAST:event_texttenVLActionPerformed
 
     private void btntimNongTraiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btntimNongTraiActionPerformed
-       
+        try {
+            tableModel.setRowCount(0);
+            String tenNT = texttenNT.getText();
+            listFarm = Farm_Controller.findFarm(tenNT);
+            for (Farm fa : listFarm) {
+                tableModel.addRow(new Object[]{tableModel.getRowCount() + 1, fa.getFarmID(),
+                    fa.getFarmName(), fa.getFarmAdd()});
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btntimNongTraiActionPerformed
 
     private void btnsuaNongTraiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnsuaNongTraiActionPerformed
         // TODO add your handling code here:
-    
+        boolean check = false;
+        String maNT = textMaNT.getText();
+        String tenNT = texttenNT.getText();
+        String diachiNT = textdiaChiNT.getText();
+
+        try {
+
+            Farm fa = new Farm(maNT, tenNT, diachiNT);
+            check = Farm_Controller.updateFarm(fa);
+            if (tenNT.isEmpty() || diachiNT.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin");
+            } else {
+                if (check == true) {
+
+                    JOptionPane.showMessageDialog(this, "Sửa thành công.");
+                    showFarm();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Sửa không thành công",
+                            "Lỗi đăng ký", JOptionPane.ERROR_MESSAGE);
+                }
+                reset_Farm();
+            }
+
+        } catch (SQLException ex) {
+            int code = ex.getErrorCode();
+            String msg = ex.getMessage();
+            JOptionPane.showMessageDialog(this, msg, String.valueOf(code), JOptionPane.ERROR_MESSAGE);
+
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
 
     }//GEN-LAST:event_btnsuaNongTraiActionPerformed
 
@@ -2705,102 +3104,422 @@ public class AdminHome extends javax.swing.JFrame {
     }//GEN-LAST:event_tableNongTraiMouseClicked
 
     private void btnthemNCCActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnthemNCCActionPerformed
-       
 
+        boolean check = false;
+        String maNCC = textmaNCC.getText();
+        String tenNCC = texttenNCC.getText();
+        long sdtNCC = 0;
+        String diachiNCC = textdiaChiNCC.getText();
+        String emailNCC = textemailNCC.getText();
+        if (tenNCC.isEmpty() || diachiNCC.isEmpty() || emailNCC.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin");
+        } else {
+            if (!maNCC.equalsIgnoreCase("")) {
+                JOptionPane.showMessageDialog(this, "Không cần nhập mã nhà cung cấp khi thêm mới!");
+            } else {
+                try {
+
+                    Supplier sup = new Supplier("", tenNCC, sdtNCC, diachiNCC, emailNCC);
+                    check = Supplier_Controller.insertSup(sup);
+
+                    if (check == true) {
+
+                        JOptionPane.showMessageDialog(this, "Thêm thành công.");
+                        showSup();
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Thêm không thành công",
+                                "Lỗi đăng ký", JOptionPane.ERROR_MESSAGE);
+                    }
+                    reset_Sup();
+
+                } catch (SQLException ex) {
+                    int code = ex.getErrorCode();
+                    String msg = ex.getMessage();
+                    JOptionPane.showMessageDialog(this, msg, String.valueOf(code), JOptionPane.ERROR_MESSAGE);
+
+                } catch (ClassNotFoundException ex) {
+                    Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+            }
+        }
     }//GEN-LAST:event_btnthemNCCActionPerformed
 
     private void tableSupMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableSupMouseClicked
-       
+
     }//GEN-LAST:event_tableSupMouseClicked
 
     private void tableNongTraiMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableNongTraiMousePressed
+        int selectedIndex = tableNongTrai.getSelectedRow();
+        if (selectedIndex >= 0) {
+            Farm fa = listFarm.get(selectedIndex);
+            textMaNT.setText(fa.getFarmID());
+            textMaNT.setEditable(false);
+            texttenNT.setText(fa.getFarmName());
+            textdiaChiNT.setText(fa.getFarmAdd());
+        }
 
-        
     }//GEN-LAST:event_tableNongTraiMousePressed
-    
+
     private void btnresetNTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnresetNTActionPerformed
         // TODO add your handling code here:
-     
+        try {
+            showFarm();
+            reset_Farm();
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
     }//GEN-LAST:event_btnresetNTActionPerformed
 
     private void btntimNCCActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btntimNCCActionPerformed
         // TODO add your handling code here:
-       
+        try {
+            tableModel1.setRowCount(0);
+            String tenNCC = texttenNCC.getText();
+            listSup = Supplier_Controller.findSup(tenNCC);
+            for (Supplier sup : listSup) {
+                tableModel1.addRow(new Object[]{tableModel1.getRowCount() + 1, sup.getSupID(),
+                    sup.getSupName(), sup.getSupPhone(), sup.getSupAdd(), sup.getSupEmail()});
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btntimNCCActionPerformed
 
     private void tableSupMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableSupMousePressed
         // TODO add your handling code here:
-       
+        int selectedIndex = tableSup.getSelectedRow();
+        if (selectedIndex >= 0) {
+            Supplier sup = listSup.get(selectedIndex);
+            textmaNCC.setText(sup.getSupID());
+            textmaNCC.setEditable(false);
+            texttenNCC.setText(sup.getSupName());
+            textsdtNCC.setText(String.valueOf(sup.getSupPhone()));
+            textdiaChiNCC.setText(sup.getSupAdd());
+            textemailNCC.setText(sup.getSupEmail());
+        }
     }//GEN-LAST:event_tableSupMousePressed
 
     private void btnresetNCCActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnresetNCCActionPerformed
-       
+        try {
+            // TODO add your handling code here:
+            showSup();
+            reset_Sup();
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
     }//GEN-LAST:event_btnresetNCCActionPerformed
 
     private void cbxloaiKHActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxloaiKHActionPerformed
         // TODO add your handling code here:
-     
+
     }//GEN-LAST:event_cbxloaiKHActionPerformed
 
     private void tableKHMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableKHMousePressed
         // TODO add your handling code here:
-      
-        
+        int selectedIndex = tableKH.getSelectedRow();
+        if (selectedIndex >= 0) {
+            Customer cus = listCus.get(selectedIndex);
+            textmaKH.setText(cus.getCusID());
+            textmaKH.setEditable(false);
+            texttenKH.setText(cus.getCusName());
+            cbxgenderKH.setSelectedItem(cus.getGender());
+            dateBirthKH.setDate(cus.getDateOfBirth());
+            //SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yyyy",Locale.getDefault());
+            //String d=sdf.format(dateBirthKH.getDate());
+            textdiaChiKH.setText(cus.getCusAdd());
+            textsdtKH.setText(String.valueOf(cus.getCusPhone()));
+            textemailKH.setText(cus.getCusEmail());
+            cbxloaiKH.setSelectedItem(cus.getCusType());
+            texttienTL.setText(String.valueOf(cus.getAccrued_Money()));
+            textmaUser.setText(cus.getUserID());
+        }
+
     }//GEN-LAST:event_tableKHMousePressed
 
     private void btntimKHActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btntimKHActionPerformed
         // TODO add your handling code here:
-      
+        try {
+            tableModel2.setRowCount(0);
+            String tenKH = texttenKH.getText();
+            listCus = Customer_Controller.findCus(tenKH);
+            for (Customer cus : listCus) {
+                tableModel2.addRow(new Object[]{tableModel2.getRowCount() + 1, cus.getCusID(),
+                    cus.getCusName(), cus.getGender(), cus.getDateOfBirth(), cus.getCusAdd(),
+                    cus.getCusPhone(), cus.getCusEmail(), cus.getCusType(), cus.getAccrued_Money(), cus.getUserID()});
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
     }//GEN-LAST:event_btntimKHActionPerformed
 
     private void btnxoaKHActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnxoaKHActionPerformed
         // TODO add your handling code here:
-        
+        String cusID = textmaKH.getText();
+        try {
+            int n = JOptionPane.showConfirmDialog(
+                    this,
+                    "Bạn có chắc chắn muốn xóa không ?",
+                    "Alert",
+                    JOptionPane.YES_NO_OPTION);
+            if (n == JOptionPane.YES_OPTION) {
+                Customer_Controller.deleteCus(cusID);
+                showCus();
+                reset_Cus();
+            }
+
+        } catch (SQLException ex) {
+            int code = ex.getErrorCode();
+            String msg = ex.getMessage();
+            JOptionPane.showMessageDialog(this, msg, String.valueOf(code), JOptionPane.ERROR_MESSAGE);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnxoaKHActionPerformed
 
     private void btnsuaKHActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnsuaKHActionPerformed
         // TODO add your handling code here:
-       
+        boolean check = false;
+        String maKH = textmaKH.getText();
+        String tenKH = texttenKH.getText();
+        String gioitinhKH = (String) cbxgenderKH.getSelectedItem();
+        DateFormat dateformat = new SimpleDateFormat("dd-MMM-yy");
+        String ngay = dateformat.format((java.util.Date) this.dateBirthKH.getDate());
+        String diachiKH = textdiaChiKH.getText();
+        long sdtKH = 0;
+        String emailKH = textemailKH.getText();
+        String loaiKH = (String) cbxloaiKH.getSelectedItem();
+        double tienTL = 0;
+        String maUS = textmaUser.getText();
+        if (!texttienTL.getText().equalsIgnoreCase("")) {
+            tienTL = Double.parseDouble(texttienTL.getText());
+        }
+        if (!textsdtKH.getText().equalsIgnoreCase("")) {
+            sdtKH = Long.parseLong(textsdtKH.getText());
+        }
+
+        try {
+            if (tenKH.isEmpty() || emailKH.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Vui lòng nhập tên và email khách hàng");
+            } else {
+                Customer cus = new Customer(maKH, tenKH, gioitinhKH, dateformat.parse(ngay), diachiKH, sdtKH, emailKH, loaiKH, tienTL, maUS);
+                check = Customer_Controller.updateCus(cus);
+
+                if (check == true) {
+
+                    JOptionPane.showMessageDialog(this, "Sửa thành công.");
+                    showCus();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Sửa không thành công",
+                            "Lỗi đăng ký", JOptionPane.ERROR_MESSAGE);
+                }
+                reset_Cus();
+            }
+        } catch (SQLException ex) {
+            int code = ex.getErrorCode();
+            String msg = ex.getMessage();
+            JOptionPane.showMessageDialog(this, msg, String.valueOf(code), JOptionPane.ERROR_MESSAGE);
+
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParseException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
 
     }//GEN-LAST:event_btnsuaKHActionPerformed
 
     private void btnresetKHActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnresetKHActionPerformed
         // TODO add your handling code here:
-       
+        try {
+            showCus();
+            reset_Cus();
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
     }//GEN-LAST:event_btnresetKHActionPerformed
 
     private void btnthemMaKMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnthemMaKMActionPerformed
-     
-        
+        boolean check = false;
+        String maKM = textmaKM.getText();
+        String maCode = textmaCode.getText();
+        double giatriKM = 0;
+        String loaimaKM = (String) cbxloaiMaKM.getSelectedItem();
+        DateFormat dateformat = new SimpleDateFormat("dd-MMM-yy");
+        String ngayBD = dateformat.format((java.util.Date) this.date_start_dis.getDate());
+        String ngayKT = dateformat.format((java.util.Date) this.date_end_dis.getDate());
+
+        //java.sql.Date bd=new java.sql.Date(ngayBD.getTime());
+        //String ngayKT = dateformat.format(date_end_dis.getDate().getTime());
+        //java.sql.Date kt=new java.sql.Date(ngayBD.getTime());
+//        Date ngayBD = (Date) date_start_dis.getDate();
+//        java.sql.Date ngay_BD=new java.sql.Date(ngayBD.getTime());
+//        Date ngayKT = (Date) date_end_dis.getDate();
+//        java.sql.Date ngay_KT=new java.sql.Date(ngayKT.getTime());
+        if (maCode.isEmpty() || loaimaKM.isEmpty() || ngayBD.isEmpty() || ngayKT.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin ");
+        } else {
+            if (!maKM.equalsIgnoreCase("")) {
+                JOptionPane.showMessageDialog(this, "Không cần nhập mã khi thêm mới!");
+            } else {
+                try {
+
+                    Discount dis = new Discount("", maCode, giatriKM, loaimaKM, dateformat.parse(ngayBD), dateformat.parse(ngayKT), 0);
+                    check = Discount_Controller.insertDis(dis);
+
+                    if (check == true) {
+
+                        JOptionPane.showMessageDialog(this, "Thêm thành công.");
+                        showDis();
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Thêm không thành công",
+                                "Lỗi đăng ký", JOptionPane.ERROR_MESSAGE);
+                    }
+                    reset_Dis();
+
+                } catch (SQLException ex) {
+                    int code = ex.getErrorCode();
+                    String msg = ex.getMessage();
+                    JOptionPane.showMessageDialog(this, msg, String.valueOf(code), JOptionPane.ERROR_MESSAGE);
+
+                } catch (ClassNotFoundException ex) {
+                    Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+
+//                } catch (ParseException ex) {
+//                    Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (ParseException ex) {
+                    Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+            }
+        }
+
     }//GEN-LAST:event_btnthemMaKMActionPerformed
 
     private void tableKMMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableKMMousePressed
         // TODO add your handling code here:
-      
+        int selectedIndex = tableKM.getSelectedRow();
+        if (selectedIndex >= 0) {
+            Discount dis = listDis.get(selectedIndex);
+            textmaKM.setText(dis.getDisID());
+            textmaKM.setEditable(false);
+            textmaCode.setText(dis.getDisCode());
+            textgiaTriKM.setText(String.valueOf(dis.getValue()));
+            cbxloaiMaKM.setSelectedItem(dis.getCusType());
+            date_start_dis.setDate(dis.getStartDate());
+            date_end_dis.setDate(dis.getEndDate());
+        }
     }//GEN-LAST:event_tableKMMousePressed
 
     private void btnxoaMaKMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnxoaMaKMActionPerformed
         // TODO add your handling code here:
-        
-        
+        String disID = textmaKM.getText();
+        try {
+            int n = JOptionPane.showConfirmDialog(
+                    this,
+                    "Bạn có chắc chắn muốn xóa không ?",
+                    "Alert",
+                    JOptionPane.YES_NO_OPTION);
+            if (n == JOptionPane.YES_OPTION) {
+                Discount_Controller.deleteDis(disID);
+                showDis();
+                reset_Dis();
+            }
+
+        } catch (SQLException ex) {
+            int code = ex.getErrorCode();
+            String msg = ex.getMessage();
+            JOptionPane.showMessageDialog(this, msg, String.valueOf(code), JOptionPane.ERROR_MESSAGE);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }//GEN-LAST:event_btnxoaMaKMActionPerformed
 
     private void btnsuaMaKMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnsuaMaKMActionPerformed
- 
+        boolean check = false;
+        String maKM = textmaKM.getText();
+        String maCode = textmaCode.getText();
+        double giatriKM = 0;
+        String loaimaKM = (String) cbxloaiMaKM.getSelectedItem();
+        DateFormat dateformat = new SimpleDateFormat("dd-MMM-yy");
+        String ngayBD = dateformat.format((java.util.Date) this.date_start_dis.getDate());
+        String ngayKT = dateformat.format((java.util.Date) this.date_end_dis.getDate());
+        if (!textgiaTriKM.getText().equalsIgnoreCase("")) {
+            giatriKM = Double.parseDouble(textgiaTriKM.getText());
+        }
+
+        try {
+            if (maCode.isEmpty() || loaimaKM.isEmpty() || ngayBD.isEmpty() || ngayKT.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin");
+            } else {
+                Discount dis = new Discount(maKM, maCode, giatriKM, loaimaKM, dateformat.parse(ngayBD), dateformat.parse(ngayKT), 0);
+                check = Discount_Controller.updateDis(dis);
+
+                if (check == true) {
+
+                    JOptionPane.showMessageDialog(this, "Sửa thành công.");
+                    showDis();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Sửa không thành công",
+                            "Lỗi đăng ký", JOptionPane.ERROR_MESSAGE);
+                }
+                reset_Dis();
+            }
+        } catch (SQLException ex) {
+            int code = ex.getErrorCode();
+            String msg = ex.getMessage();
+            JOptionPane.showMessageDialog(this, msg, String.valueOf(code), JOptionPane.ERROR_MESSAGE);
+
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParseException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnsuaMaKMActionPerformed
 
     private void btnresetKMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnresetKMActionPerformed
-       
+        try {
+            // TODO add your handling code here:
+            showDis();
+            reset_Dis();
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnresetKMActionPerformed
 
     private void btntimMaKMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btntimMaKMActionPerformed
         // TODO add your handling code here:
-      
+        try {
+            tableModel3.setRowCount(0);
+            String code = textmaCode.getText();
+            listDis = Discount_Controller.findDis(code);
+            for (Discount dis : listDis) {
+                tableModel3.addRow(new Object[]{tableModel3.getRowCount() + 1, dis.getDisID(),
+                    dis.getDisCode(), dis.getValue(), dis.getCusType(), dis.getStartDate(), dis.getEndDate()
+                });
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btntimMaKMActionPerformed
 
     private void btn_Timvl_tonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_Timvl_tonActionPerformed
