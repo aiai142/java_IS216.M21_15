@@ -10,7 +10,15 @@ import Process.Controller_Transport;
 import Model.Customer;
 import Model.Discount;
 import Model.Farm;
+import Model.Inventory_Product;
+import Model.Inventory_Resources;
+import Model.Product;
+import Model.Resources;
 import Model.Supplier;
+import Process.Controller_Inventory_Product;
+import Process.Controller_Inventory_Resources;
+import Process.Controller_Product;
+import Process.Controller_Resource;
 import Process.Customer_Controller;
 import Process.Discount_Controller;
 import Process.Farm_Controller;
@@ -20,6 +28,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.sql.Date;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -36,9 +49,11 @@ import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableModel;
 
@@ -84,6 +99,32 @@ public class AdminHome extends javax.swing.JFrame {
     List<Customer> listCus = new ArrayList<>();
     // Bien list chung cho khuyen mai
     List<Discount> listDis = new ArrayList<>();
+    
+    
+      DefaultTableModel tableModel5;
+    DefaultTableModel tableModel7;
+    DefaultTableModel tableModel6;
+    DefaultTableModel tableModel11;
+
+    //Bien list global cho trang nguyen vat lieu
+    List<Resources> resourcesList;
+
+    //Bien global cho trang quan ly TON NGUYEN VAT LIEU
+    List<Inventory_Resources> in_resourcesList;
+    List<String> data_combobox_id_resources;
+    List<String> data_combobox_stockid;
+
+    //bien global cho trang quan ly nong san
+    List<Product> productList;
+    List<String> data_combobox_farmid;
+
+    //Bien global cho trang quan ly TON NONG SAN
+    List<Inventory_Product> in_productList;
+    List<String> data_combobox_id_product;
+    List<String> data_combobox_stockid_pro;
+
+    
+    
 
     CardLayout cardlayout;
 
@@ -115,8 +156,204 @@ public class AdminHome extends javax.swing.JFrame {
         //Set table chp quan li ma khuyen mai
         tableModel3 = (DefaultTableModel) tableKM.getModel();
         setCellsAlignment(tableKM, SwingConstants.CENTER);
+        
+          //bang quan ly nguyen vat lieu
+        tableModel5 = (DefaultTableModel) table_ds_nguyenVL.getModel();
+        setCellsAlignment(table_ds_nguyenVL, SwingConstants.CENTER);
+
+        //bang quan ly ton nguyen vat lieu
+        tableModel7 = (DefaultTableModel) table_ds_inven_re.getModel();
+        setCellsAlignment(table_ds_inven_re, SwingConstants.CENTER);
+
+        //bang quan ly nong san
+        tableModel6 = (DefaultTableModel) table_ds_nong_san.getModel();
+        setCellsAlignment(table_ds_nong_san, SwingConstants.CENTER);
+
+        //bang quan ly ton nong san
+        tableModel11 = (DefaultTableModel) table_ds_ton_ns.getModel();
+        setCellsAlignment(table_ds_ton_ns, SwingConstants.CENTER);
+
+        try {
+            reset_product();
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
     }
+    
+    
+    
+    
+    
+      //reset lai cac text field tren trang quan ly nguyen vat lieu
+    public void reset_resources() {
+        textMaVL.setText("");
+        texttenVL.setText("");
+        cbxloaiVL.setSelectedIndex(-1);
+        textgiaVL.setText("");
+        textMaVL.setEditable(true);
+    }
+
+    //Hien thi noi dung cua trang quan ly nguyen vat lieu
+    private void showResources() throws SQLException, ClassNotFoundException {
+        resourcesList = Controller_Resource.findAll();
+        tableModel5.setRowCount(0);
+
+        for (Resources rc : resourcesList) {
+            tableModel5.addRow(new Object[]{tableModel5.getRowCount() + 1, rc.getReID(),
+                rc.getResourcesName(), rc.getRePrice(), rc.getQuantity(), rc.getUnit()});
+        }
+    }
+
+    //reset lai cac text field tren trang quan ly ton nguyen 
+    public void reset_in_resources() throws SQLException, ClassNotFoundException {
+        showInvenResources();
+        show_Combobox_id_resources();
+        show_Combobox_stockid_resources();
+        show_text_name_resources();
+        cbb_makhovl_ton.setSelectedIndex(-1);
+        cbb_mavl_ton.setSelectedIndex(-1);
+        text_Tenvl_ton.setText("");
+        text_soluongvl_ton.setText("");
+        cbb_makhovl_ton.setEnabled(true);
+        cbb_mavl_ton.setEnabled(true);
+    }
+
+    //Hien thi noi dung cua trang quan ly ton kho nguyen vat lieu
+    private void showInvenResources() throws SQLException, ClassNotFoundException {
+        in_resourcesList = Controller_Inventory_Resources.findAll();
+        tableModel7.setRowCount(0);
+        for (Inventory_Resources rc : in_resourcesList) {
+            tableModel7.addRow(new Object[]{tableModel7.getRowCount() + 1, rc.getStockId(),
+                rc.getReId(), rc.getName(), rc.getNum_inventory_re()});
+        }
+    }
+
+    //Hien thi ma kho cho combobox ma kho 
+    //tren trang quan ly ton kho nguyen vat lieu
+    private void show_Combobox_stockid_resources() throws SQLException, ClassNotFoundException {
+        data_combobox_stockid = Controller_Inventory_Resources.allStockId();
+        cbb_makhovl_ton.removeAllItems();
+        for (String id : data_combobox_stockid) {
+            cbb_makhovl_ton.addItem(id);
+        }
+    }
+
+    //Hien thi ma nguyen vat lieu cho combobox ma nguyen vat lieu 
+    //tren trang quan ly ton kho nguyen vat lieu
+    private void show_Combobox_id_resources() throws SQLException, ClassNotFoundException {
+        data_combobox_id_resources = Controller_Inventory_Resources.id_resources();
+        cbb_mavl_ton.removeAllItems();
+        for (String id : data_combobox_id_resources) {
+            if (data_combobox_id_resources.contains(id)) {
+                cbb_mavl_ton.addItem(id);
+            }
+        }
+    }
+
+    //hien thi ten nguyen vat lieu o bang TON NGUYEN VAT LIEU khi chon tu cbb
+    private void show_text_name_resources() throws SQLException, ClassNotFoundException {
+        String id = (String) cbb_mavl_ton.getSelectedItem();
+        if (id != null) {
+            id = Controller_Inventory_Resources.get_name_resources(id);
+            System.out.println(id);
+            text_Tenvl_ton.setText(id);
+        }
+    }
+
+    //Show thong tin cua nong san len trang quan ly
+    private void showProduct() throws SQLException, ClassNotFoundException {
+        productList = Controller_Product.findAll();
+        tableModel6.setRowCount(0);
+        for (Product pro : productList) {
+            tableModel6.addRow(new Object[]{tableModel6.getRowCount() + 1, pro.getProid(),
+                pro.getProname(), pro.getProfarmid(), pro.getProprice(), pro.getProtype(), pro.getQuantity(), pro.getImage()});
+        }
+    }
+
+    //show combobox ma trang trai tren bang quan ly nong san
+    private void show_Combobox_farmid_product() throws SQLException, ClassNotFoundException {
+        data_combobox_farmid = Controller_Product.farm_id();
+        cbb_ma_nong_trai_sp.removeAllItems();
+        for (String id : data_combobox_farmid) {
+            if (data_combobox_farmid.contains(id)) {
+                cbb_ma_nong_trai_sp.addItem(id);
+            }
+        }
+    }
+
+    //reset trang quan ly nong san
+    public void reset_product() throws SQLException, ClassNotFoundException {
+        showInvenProduct();
+        show_Combobox_farmid_product();
+        showProduct();
+        texttenSP.setText("");
+        textGia_nong_san.setText("");
+        text_link_anh.setText("");
+        textmaSP.setText("");
+        cbb_ma_nong_trai_sp.setSelectedIndex(-1);
+        cbb_loai_sp.setSelectedIndex(-1);
+        textmaSP.setEditable(true);
+    }
+
+    //Hien thi ma kho cho combobox ma kho 
+    //tren trang quan ly TON NONG SAN
+    private void show_Combobox_stockid_product() throws SQLException, ClassNotFoundException {
+        data_combobox_stockid_pro = Controller_Inventory_Product.allStockId();
+        cbb_ton_makho_ns.removeAllItems();
+        for (String id : data_combobox_stockid_pro) {
+            cbb_ton_makho_ns.addItem(id);
+        }
+    }
+
+    //Hien thi ma nong san cho combobox ma nong san
+    //tren trang quan ly TON NONG SAN
+    private void show_Combobox_id_product() throws SQLException, ClassNotFoundException {
+        data_combobox_id_product = Controller_Inventory_Product.id_product();
+        cbb_ton_mans.removeAllItems();
+        for (String id : data_combobox_id_product) {
+            if (data_combobox_id_product.contains(id)) {
+                cbb_ton_mans.addItem(id);
+            }
+        }
+    }
+
+    //reset lai cac text field tren trang quan ly TON NONG SAN
+    public void reset_in_product() throws SQLException, ClassNotFoundException {
+        show_Combobox_id_product();
+        show_Combobox_stockid_product();
+        showInvenProduct();
+        cbb_ton_makho_ns.setSelectedIndex(-1);
+        cbb_ton_mans.setSelectedIndex(-1);
+        txt_ton_tenns.setText("");
+        txt_ton_soluong_ns.setText("");
+        cbb_ton_makho_ns.setEnabled(true);
+        cbb_ton_mans.setEnabled(true);
+    }
+
+    //hien thi ten nong san o bang TON nong san khi chon tu cbb
+    private void show_text_name_product() throws SQLException, ClassNotFoundException {
+        String id = (String) cbb_ton_mans.getSelectedItem();
+        if (id != null) {
+            id = Controller_Inventory_Product.get_name_product(id);
+            txt_ton_tenns.setText(id);
+        }
+    }
+
+    private void showInvenProduct() throws SQLException, ClassNotFoundException {
+        in_productList = Controller_Inventory_Product.findAll();
+        tableModel11.setRowCount(0);
+        for (Inventory_Product rc : in_productList) {
+            tableModel11.addRow(new Object[]{tableModel11.getRowCount() + 1, rc.getStockId(),
+                rc.getProId(), rc.getName(), rc.getNum_inventory_pro()});
+        }
+    }
+    
+    
+    
+    
     
     public static void setCellsAlignment(JTable table, int alignment) {
         DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
@@ -131,13 +368,7 @@ public class AdminHome extends javax.swing.JFrame {
 
     //Reset lai cac text field trang cua trang nong trai
     //reset lai cac text field tren trang quan ly nguyen vat lieu
-    public void reset_resources() {
-        textMaVL.setText("");
-        texttenVL.setText("");
-        cbxloaiVL.setSelectedIndex(0);
-        textgiaVL.setText("");
-        textMaVL.setEditable(true);
-    }
+  
    
        //reset lai cac text field tren trang quan ly kho
     public void reset_stock() {
@@ -359,7 +590,7 @@ public class AdminHome extends javax.swing.JFrame {
         btnxoaSP = new javax.swing.JButton();
         btnsuaSP = new javax.swing.JButton();
         jScrollPane11 = new javax.swing.JScrollPane();
-        tableListKH = new javax.swing.JTable();
+        table_ds_nong_san = new javax.swing.JTable();
         jLabel15 = new javax.swing.JLabel();
         textmaSP = new javax.swing.JTextField();
         jLabel16 = new javax.swing.JLabel();
@@ -367,7 +598,7 @@ public class AdminHome extends javax.swing.JFrame {
         jLabel18 = new javax.swing.JLabel();
         cbb_loai_sp = new javax.swing.JComboBox<>();
         jLabel25 = new javax.swing.JLabel();
-        textGia = new javax.swing.JTextField();
+        textGia_nong_san = new javax.swing.JTextField();
         btntimSP = new javax.swing.JButton();
         btn_reset_product = new javax.swing.JButton();
         jLabel73 = new javax.swing.JLabel();
@@ -773,11 +1004,21 @@ public class AdminHome extends javax.swing.JFrame {
         btntonKhovl.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         btntonKhovl.setText("QUẢN LÍ TỒN KHO NGUYÊN VẬT LIỆU");
         btntonKhovl.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        btntonKhovl.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btntonKhovlActionPerformed(evt);
+            }
+        });
 
         btntonSanPham.setBackground(new java.awt.Color(248, 211, 94));
         btntonSanPham.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         btntonSanPham.setText("QUẢN LÍ TỒN KHO NÔNG SẢN");
         btntonSanPham.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        btntonSanPham.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btntonSanPhamActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -857,14 +1098,24 @@ public class AdminHome extends javax.swing.JFrame {
         btnxoaSP.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         btnxoaSP.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/trash.png"))); // NOI18N
         btnxoaSP.setText("Xóa");
+        btnxoaSP.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnxoaSPActionPerformed(evt);
+            }
+        });
 
         btnsuaSP.setBackground(new java.awt.Color(244, 211, 94));
         btnsuaSP.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         btnsuaSP.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/pencil.png"))); // NOI18N
         btnsuaSP.setText("Sửa");
+        btnsuaSP.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnsuaSPActionPerformed(evt);
+            }
+        });
 
-        tableListKH.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        tableListKH.setModel(new javax.swing.table.DefaultTableModel(
+        table_ds_nong_san.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        table_ds_nong_san.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -887,10 +1138,15 @@ public class AdminHome extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        tableListKH.setRowHeight(30);
-        tableListKH.setRowSelectionAllowed(false);
-        tableListKH.setShowGrid(false);
-        jScrollPane11.setViewportView(tableListKH);
+        table_ds_nong_san.setRowHeight(30);
+        table_ds_nong_san.setRowSelectionAllowed(false);
+        table_ds_nong_san.setShowGrid(false);
+        table_ds_nong_san.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                table_ds_nong_sanMouseClicked(evt);
+            }
+        });
+        jScrollPane11.setViewportView(table_ds_nong_san);
 
         jLabel15.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jLabel15.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -937,12 +1193,22 @@ public class AdminHome extends javax.swing.JFrame {
         });
 
         btn_reset_product.setText("Reset");
+        btn_reset_product.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_reset_productActionPerformed(evt);
+            }
+        });
 
         jLabel73.setText("Mã nông trại");
 
         cbb_ma_nong_trai_sp.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         btn_them_anh_ns.setText("Ảnh");
+        btn_them_anh_ns.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_them_anh_nsActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jpnCard1Layout = new javax.swing.GroupLayout(jpnCard1);
         jpnCard1.setLayout(jpnCard1Layout);
@@ -988,7 +1254,7 @@ public class AdminHome extends javax.swing.JFrame {
                                     .addComponent(jLabel18))
                                 .addGap(44, 44, 44)
                                 .addGroup(jpnCard1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(textGia, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(textGia_nong_san, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(cbb_loai_sp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(jpnCard1Layout.createSequentialGroup()
                                 .addComponent(btn_them_anh_ns, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1006,7 +1272,7 @@ public class AdminHome extends javax.swing.JFrame {
                     .addComponent(jLabel15)
                     .addComponent(textmaSP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel25)
-                    .addComponent(textGia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(textGia_nong_san, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(15, 15, 15)
                 .addGroup(jpnCard1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel16)
@@ -1301,6 +1567,11 @@ public class AdminHome extends javax.swing.JFrame {
         table_ds_nguyenVL.setRowHeight(30);
         table_ds_nguyenVL.setShowGrid(false);
         table_ds_nguyenVL.setShowHorizontalLines(true);
+        table_ds_nguyenVL.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                table_ds_nguyenVLMouseClicked(evt);
+            }
+        });
         jScrollPane4.setViewportView(table_ds_nguyenVL);
 
         btnxoaVL.setBackground(new java.awt.Color(248, 211, 94));
@@ -1358,8 +1629,18 @@ public class AdminHome extends javax.swing.JFrame {
         btntimVL.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         btntimVL.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/transparency (1).png"))); // NOI18N
         btntimVL.setText("Tìm");
+        btntimVL.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btntimVLActionPerformed(evt);
+            }
+        });
 
         btn_reset_nguyen_vatlieu.setText("jButton6");
+        btn_reset_nguyen_vatlieu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_reset_nguyen_vatlieuActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jpnCard4Layout = new javax.swing.GroupLayout(jpnCard4);
         jpnCard4.setLayout(jpnCard4Layout);
@@ -1368,41 +1649,36 @@ public class AdminHome extends javax.swing.JFrame {
             .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jpnCard4Layout.createSequentialGroup()
                 .addGroup(jpnCard4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpnCard4Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 1337, Short.MAX_VALUE))
                     .addGroup(jpnCard4Layout.createSequentialGroup()
+                        .addGap(350, 350, 350)
                         .addGroup(jpnCard4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jpnCard4Layout.createSequentialGroup()
-                                .addGap(350, 350, 350)
-                                .addGroup(jpnCard4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel30)
-                                    .addComponent(jLabel29))
-                                .addGap(27, 27, 27)
-                                .addGroup(jpnCard4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(textMaVL, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(texttenVL, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(35, 35, 35)
-                                .addGroup(jpnCard4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel31)
-                                    .addComponent(jLabel32))
-                                .addGap(32, 32, 32)
-                                .addGroup(jpnCard4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(cbxloaiVL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(textgiaVL, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(jpnCard4Layout.createSequentialGroup()
-                                .addGap(416, 416, 416)
-                                .addComponent(btntimVL)
-                                .addGap(18, 18, 18)
-                                .addComponent(btnthemVL)
-                                .addGap(18, 18, 18)
-                                .addComponent(btnxoaVL)
-                                .addGap(18, 18, 18)
-                                .addComponent(btnsuaVL)
-                                .addGap(18, 18, 18)
-                                .addComponent(btn_reset_nguyen_vatlieu)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                            .addComponent(jLabel30)
+                            .addComponent(jLabel29))
+                        .addGap(27, 27, 27)
+                        .addGroup(jpnCard4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(textMaVL, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(texttenVL, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(35, 35, 35)
+                        .addGroup(jpnCard4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel31)
+                            .addComponent(jLabel32))
+                        .addGap(32, 32, 32)
+                        .addGroup(jpnCard4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(cbxloaiVL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(textgiaVL, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jpnCard4Layout.createSequentialGroup()
+                        .addGap(416, 416, 416)
+                        .addComponent(btntimVL)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnthemVL)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnxoaVL)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnsuaVL)
+                        .addGap(18, 18, 18)
+                        .addComponent(btn_reset_nguyen_vatlieu)))
+                .addContainerGap(440, Short.MAX_VALUE))
+            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 1350, Short.MAX_VALUE)
         );
         jpnCard4Layout.setVerticalGroup(
             jpnCard4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -2454,6 +2730,11 @@ public class AdminHome extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        jTable10.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jTable10MousePressed(evt);
+            }
+        });
         jScrollPane10.setViewportView(jTable10);
 
         jLabel70.setText("Mã vận chuyển");
@@ -2613,6 +2894,11 @@ public class AdminHome extends javax.swing.JFrame {
         cbb_makhovl_ton.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         cbb_mavl_ton.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbb_mavl_ton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbb_mavl_tonActionPerformed(evt);
+            }
+        });
 
         table_ds_inven_re.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -2631,6 +2917,11 @@ public class AdminHome extends javax.swing.JFrame {
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
+            }
+        });
+        table_ds_inven_re.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                table_ds_inven_reMouseClicked(evt);
             }
         });
         jScrollPane12.setViewportView(table_ds_inven_re);
@@ -2776,6 +3067,11 @@ public class AdminHome extends javax.swing.JFrame {
         cbb_ton_makho_ns.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         cbb_ton_mans.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbb_ton_mans.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbb_ton_mansActionPerformed(evt);
+            }
+        });
 
         btn_Tim_nongsan_ton.setBackground(new java.awt.Color(248, 211, 94));
         btn_Tim_nongsan_ton.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
@@ -2840,6 +3136,11 @@ public class AdminHome extends javax.swing.JFrame {
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
+            }
+        });
+        table_ds_ton_ns.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                table_ds_ton_nsMouseClicked(evt);
             }
         });
         jScrollPane15.setViewportView(table_ds_ton_ns);
@@ -2958,7 +3259,16 @@ public class AdminHome extends javax.swing.JFrame {
     private void jbtManaReActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtManaReActionPerformed
         // TODO add your handling code here:
         cardlayout.show(jpnCardLayout, "jpnListRe");
-
+ try {
+            showResources();
+            reset_resources();
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminHome.class
+                    .getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AdminHome.class
+                    .getName()).log(Level.SEVERE, null, ex);
+        }
 
     }//GEN-LAST:event_jbtManaReActionPerformed
 
@@ -3120,6 +3430,26 @@ public class AdminHome extends javax.swing.JFrame {
 
     private void btnxoaVLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnxoaVLActionPerformed
         // TODO add your handling code here:
+         String id = textMaVL.getText();
+        try {
+            int n = JOptionPane.showConfirmDialog(
+                    this,
+                    "Ban co muon xoa?",
+                    "Alert",
+                    JOptionPane.YES_NO_OPTION);
+            if (n == JOptionPane.YES_OPTION) {
+                Controller_Resource.delete(id);
+                showResources();
+                reset_resources();
+            }
+
+        } catch (SQLException ex) {
+            int code = ex.getErrorCode();
+            String msg = ex.getMessage();
+            JOptionPane.showMessageDialog(this, msg, String.valueOf(code), JOptionPane.ERROR_MESSAGE);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnxoaVLActionPerformed
 
     private void btnxoaNCCActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnxoaNCCActionPerformed
@@ -3184,6 +3514,42 @@ public class AdminHome extends javax.swing.JFrame {
     private void btnthemSPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnthemSPActionPerformed
         // TODO add your handling code here:
         //open AddProduct
+         boolean check = false;
+        String masp = textmaSP.getText();
+        String tenns = texttenSP.getText();
+        String mant = (String) cbb_ma_nong_trai_sp.getSelectedItem();
+        String loains = (String) cbb_loai_sp.getSelectedItem();
+        String anh = text_link_anh.getText();
+        Integer giasp = 0;
+
+        if (!textGia_nong_san.getText().equalsIgnoreCase("")) {
+            giasp = Integer.parseInt(textGia_nong_san.getText());
+        }
+        if (tenns.equals("") || mant == null || loains == null || anh.equals("")) {
+            JOptionPane.showMessageDialog(this, "Hay dien day du thong tin");
+        } else if (!masp.equalsIgnoreCase("")) {
+            JOptionPane.showMessageDialog(this, "Them moi khong can nhap ma");
+        } else {
+            try {
+                Product pro = new Product("", tenns, giasp, mant, loains, anh, 0);
+                check = Controller_Product.insert(pro);
+                if (check == true) {
+                    JOptionPane.showMessageDialog(this, "Thêm nguyên vật liệu thành công.");
+                    showProduct();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Thêm không thành công",
+                            "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
+                reset_product();;
+            } catch (SQLException e) {
+                int code = e.getErrorCode();
+                String msg = e.getMessage();
+                JOptionPane.showMessageDialog(this, msg, String.valueOf(code), JOptionPane.ERROR_MESSAGE);
+
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
 
 
     }//GEN-LAST:event_btnthemSPActionPerformed
@@ -3272,15 +3638,100 @@ public class AdminHome extends javax.swing.JFrame {
 
     private void btntimSPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btntimSPActionPerformed
         // TODO add your handling code here:
+        try {
+            //List<Resources> resourcesList = Controller_Resource.findAll();
+            tableModel6.setRowCount(0);
+            String tensp = texttenSP.getText();
+            productList = Controller_Product.find_product(tensp);
+
+            for (Product pro : productList) {
+                tableModel6.addRow(new Object[]{tableModel6.getRowCount() + 1, pro.getProid(), pro.getProname(),
+                    pro.getProfarmid(), pro.getProprice(), pro.getProtype(), pro.getQuantity(), pro.getImage(),});
+            }
+        } catch (ClassNotFoundException | NumberFormatException | SQLException e) {
+        }
     }//GEN-LAST:event_btntimSPActionPerformed
 
     private void btnsuaVLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnsuaVLActionPerformed
         // TODO add your handling code here:
+         boolean check = false;
+        String mavl = textMaVL.getText();
+        String tenvl = texttenVL.getText();
+        String loaivl = (String) cbxloaiVL.getSelectedItem();
+        Integer giavl = 0;
+        if (!textgiaVL.getText().equalsIgnoreCase("")) {
+            giavl = Integer.parseInt(textgiaVL.getText());
+        }
+
+        if (textgiaVL.getText().equalsIgnoreCase("")) {
+            JOptionPane.showMessageDialog(this, "Giá nguyên vật liệu không được bỏ trống",
+                    "Lỗi", JOptionPane.ERROR_MESSAGE);
+        } else if (0 == giavl) {
+            JOptionPane.showMessageDialog(this, "Giá nguyên vật liệu không được 0",
+                    "Lỗi", JOptionPane.ERROR_MESSAGE);
+        } else if (tenvl.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Tên nguyên vật liệu không được bỏ trống",
+                    "Lỗi", JOptionPane.ERROR_MESSAGE);
+        } else {
+            try {
+                Resources rc = new Resources(mavl, tenvl, giavl, loaivl, 0);
+                check = Controller_Resource.update(rc);
+                if (check == true) {
+                    JOptionPane.showMessageDialog(this, "Đã sửa thành công.");
+                    showResources();
+                } else {
+                    JOptionPane.showMessageDialog(this, "sửa không thành công",
+                            "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
+                reset_resources();
+            } catch (SQLException ex) {
+                int code = ex.getErrorCode();
+                String msg = ex.getMessage();
+                JOptionPane.showMessageDialog(this, msg, String.valueOf(code), JOptionPane.ERROR_MESSAGE);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
 
     }//GEN-LAST:event_btnsuaVLActionPerformed
 
     private void btnthemVLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnthemVLActionPerformed
         // TODO add your handling code here:
+         boolean check = false;
+        String mavl = textMaVL.getText();
+        String tenvl = texttenVL.getText();
+        String loaivl = (String) cbxloaiVL.getSelectedItem();
+        Integer giavl = 0;
+        if (!textgiaVL.getText().equalsIgnoreCase("")) {
+            giavl = Integer.parseInt(textgiaVL.getText());
+        }
+        if (tenvl.equals("") || loaivl == null || giavl == 0) {
+            JOptionPane.showMessageDialog(this, "Hay dien day du thong tin cho nguyen vat lieu");
+        } else if (!mavl.equalsIgnoreCase("")) {
+            JOptionPane.showMessageDialog(this, "Không cần nhập mã nguyên vật liệu khi thêm mới!");
+        } else {
+            try {
+                Resources rc = new Resources("", tenvl, giavl, loaivl, 0);
+                check = Controller_Resource.insert(rc);
+                if (check == true) {
+                    JOptionPane.showMessageDialog(this, "Thêm nguyên vật liệu thành công.");
+                    showResources();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Thêm không thành công",
+                            "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
+                reset_resources();
+
+            } catch (SQLException ex) {
+                int code = ex.getErrorCode();
+                String msg = ex.getMessage();
+                JOptionPane.showMessageDialog(this, msg, String.valueOf(code), JOptionPane.ERROR_MESSAGE);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(AdminHome.class
+                        .getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
 
 
     }//GEN-LAST:event_btnthemVLActionPerformed
@@ -3767,42 +4218,240 @@ public class AdminHome extends javax.swing.JFrame {
 
     private void btn_Timvl_tonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_Timvl_tonActionPerformed
         // TODO add your handling code here:
+         String tenvl = text_Tenvl_ton.getText();
+        try {
+            tableModel7.setRowCount(0);
+            in_resourcesList = Controller_Inventory_Resources.find_inven_Rc(tenvl);
+            for (Inventory_Resources rc : in_resourcesList) {
+                tableModel7.addRow(new Object[]{tableModel7.getRowCount() + 1, rc.getStockId(), rc.getReId(), rc.getName(), rc.getNum_inventory_re()});
+            }
+
+        } catch (SQLException e) {
+            int code = e.getErrorCode();
+            String msg = e.getMessage();
+            JOptionPane.showMessageDialog(this, msg, String.valueOf(code), JOptionPane.ERROR_MESSAGE);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btn_Timvl_tonActionPerformed
 
     private void btn_Themvl_tonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_Themvl_tonActionPerformed
         // TODO add your handling code here:
+        // TODO add your handling code here:
+        boolean check = false;
+        String makho = (String) cbb_makhovl_ton.getSelectedItem();
+        String mavl = (String) cbb_mavl_ton.getSelectedItem();
+        Integer soluong = 0;
+        if (text_soluongvl_ton.getText().equalsIgnoreCase("0") || text_soluongvl_ton.getText().equalsIgnoreCase("")) {
+            JOptionPane.showMessageDialog(this, "số lượng không thể để trống hoặc bằng 0", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        } else {
+            try {
+                soluong = Integer.parseInt(text_soluongvl_ton.getText());
+                Inventory_Resources inre = new Inventory_Resources(makho, mavl, "", soluong);
+                check = Controller_Inventory_Resources.insert(inre);
+                if (check == true) {
+                    JOptionPane.showMessageDialog(this, "Thêm thành công.");
+                    showInvenResources();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Thêm không thành công",
+                            "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
+                reset_in_resources();
+            } catch (SQLException e) {
+                int code = e.getErrorCode();
+                String msg = e.getMessage();
+                JOptionPane.showMessageDialog(this, msg, String.valueOf(code), JOptionPane.ERROR_MESSAGE);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
     }//GEN-LAST:event_btn_Themvl_tonActionPerformed
 
     private void btn_Xoavl_tonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_Xoavl_tonActionPerformed
         // TODO add your handling code here:
+         // TODO add your handling code here:
+        String mavl = (String) cbb_mavl_ton.getSelectedItem();
+        String makho = (String) cbb_makhovl_ton.getSelectedItem();
+        try {
+            boolean check = Controller_Inventory_Resources.delete(makho, mavl);
+            if (check == true) {
+                JOptionPane.showMessageDialog(this, "Xóa thành công.");
+            } else {
+                JOptionPane.showMessageDialog(this, "Xóa không thành công",
+                        "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+            reset_in_resources();
+
+        } catch (SQLException e) {
+            int code = e.getErrorCode();
+            String msg = e.getMessage();
+            JOptionPane.showMessageDialog(this, msg, String.valueOf(code), JOptionPane.ERROR_MESSAGE);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btn_Xoavl_tonActionPerformed
 
     private void btn_Suavl_tonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_Suavl_tonActionPerformed
         // TODO add your handling code here:
+        boolean check = false;
+        String makho = (String) cbb_makhovl_ton.getSelectedItem();
+        String mavl = (String) cbb_mavl_ton.getSelectedItem();
+        Integer soluong = 0;
+        if (text_soluongvl_ton.getText().equalsIgnoreCase("")) {
+            JOptionPane.showMessageDialog(this, "số lượng không thể để trống", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        } else {
+            try {
+                soluong = Integer.parseInt(text_soluongvl_ton.getText());
+                Inventory_Resources inre = new Inventory_Resources(makho, mavl, "", soluong);
+                check = Controller_Inventory_Resources.update(inre);
+                if (check == true) {
+                    JOptionPane.showMessageDialog(this, "Sửa thành công.");
+                    showInvenResources();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Sửa không thành công",
+                            "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
+                reset_in_resources();
+            } catch (SQLException e) {
+                int code = e.getErrorCode();
+                String msg = e.getMessage();
+                JOptionPane.showMessageDialog(this, msg, String.valueOf(code), JOptionPane.ERROR_MESSAGE);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
     }//GEN-LAST:event_btn_Suavl_tonActionPerformed
 
     private void btn_datlai_nvl_tonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_datlai_nvl_tonActionPerformed
         // TODO add your handling code here:
+        try {
+            // TODO add your handling code here:
+            reset_in_resources();
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btn_datlai_nvl_tonActionPerformed
 
     private void btn_Tim_nongsan_tonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_Tim_nongsan_tonActionPerformed
         // TODO add your handling code here:
+          String tensp = txt_ton_tenns.getText();
+        try {
+            tableModel11.setRowCount(0);
+            in_productList = Controller_Inventory_Product.find_inven_pro(tensp);
+            for (Inventory_Product pro : in_productList) {
+                tableModel11.addRow(new Object[]{tableModel11.getRowCount() + 1, pro.getStockId(), pro.getProId(), pro.getName(), pro.getNum_inventory_pro()});
+            }
+
+        } catch (SQLException e) {
+            int code = e.getErrorCode();
+            String msg = e.getMessage();
+            JOptionPane.showMessageDialog(this, msg, String.valueOf(code), JOptionPane.ERROR_MESSAGE);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btn_Tim_nongsan_tonActionPerformed
 
     private void btn_them_nongsan_tonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_them_nongsan_tonActionPerformed
         // TODO add your handling code here:
+         boolean check = false;
+        String makho = (String) cbb_ton_makho_ns.getSelectedItem();
+        String mans = (String) cbb_ton_mans.getSelectedItem();
+        Integer soluong = 0;
+        if (txt_ton_soluong_ns.getText().equalsIgnoreCase("0") || txt_ton_soluong_ns.getText().equalsIgnoreCase("")) {
+            JOptionPane.showMessageDialog(this, "số lượng không thể để trống hoặc bằng 0", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        } else {
+            try {
+                soluong = Integer.parseInt(txt_ton_soluong_ns.getText());
+                Inventory_Product pro = new Inventory_Product(makho, mans, "", soluong);
+                check = Controller_Inventory_Product.insert(pro);
+                if (check == true) {
+                    JOptionPane.showMessageDialog(this, "Thêm thành công.");
+                    showInvenResources();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Thêm không thành công",
+                            "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
+                reset_in_product();
+            } catch (SQLException e) {
+                int code = e.getErrorCode();
+                String msg = e.getMessage();
+                JOptionPane.showMessageDialog(this, msg, String.valueOf(code), JOptionPane.ERROR_MESSAGE);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
     }//GEN-LAST:event_btn_them_nongsan_tonActionPerformed
 
     private void btn_xoa_nongsan_tonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_xoa_nongsan_tonActionPerformed
         // TODO add your handling code here:
+         String masp = (String) cbb_ton_mans.getSelectedItem();
+        String makho = (String) cbb_ton_makho_ns.getSelectedItem();
+        try {
+            boolean check = Controller_Inventory_Product.delete(makho, masp);
+            if (check == true) {
+                JOptionPane.showMessageDialog(this, "Xóa thành công.");
+            } else {
+                JOptionPane.showMessageDialog(this, "Xóa không thành công",
+                        "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+            reset_in_product();
+
+        } catch (SQLException e) {
+            int code = e.getErrorCode();
+            String msg = e.getMessage();
+            JOptionPane.showMessageDialog(this, msg, String.valueOf(code), JOptionPane.ERROR_MESSAGE);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btn_xoa_nongsan_tonActionPerformed
 
     private void btn_sua_nongsan_tonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_sua_nongsan_tonActionPerformed
         // TODO add your handling code here:
+         boolean check = false;
+        String masp = (String) cbb_ton_mans.getSelectedItem();
+        String makho = (String) cbb_ton_makho_ns.getSelectedItem();
+        Integer soluong = 0;
+        if (txt_ton_soluong_ns.getText().equalsIgnoreCase("")) {
+            JOptionPane.showMessageDialog(this, "số lượng không thể để trống", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        } else {
+            try {
+                soluong = Integer.parseInt(txt_ton_soluong_ns.getText());
+                Inventory_Product pro = new Inventory_Product(makho, masp, "", soluong);
+                check = Controller_Inventory_Product.update(pro);
+                if (check == true) {
+                    JOptionPane.showMessageDialog(this, "Sửa thành công.");
+                    showInvenResources();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Sửa không thành công",
+                            "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
+                reset_in_product();
+            } catch (SQLException e) {
+                int code = e.getErrorCode();
+                String msg = e.getMessage();
+                JOptionPane.showMessageDialog(this, msg, String.valueOf(code), JOptionPane.ERROR_MESSAGE);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
     }//GEN-LAST:event_btn_sua_nongsan_tonActionPerformed
 
     private void btn_datlai_nongsan_tonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_datlai_nongsan_tonActionPerformed
         // TODO add your handling code here:
+         try {
+            // TODO add your handling code here:
+            reset_in_product();
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btn_datlai_nongsan_tonActionPerformed
 
     //tim kho
@@ -4312,6 +4961,246 @@ public class AdminHome extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnResetTransportActionPerformed
 
+    private void table_ds_nong_sanMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_table_ds_nong_sanMouseClicked
+        // TODO add your handling code here:
+         int selectedIndex = table_ds_nong_san.getSelectedRow();
+        if (selectedIndex >= 0) {
+            Product pro = productList.get(selectedIndex);
+            textmaSP.setText(pro.getProid());
+            texttenSP.setText(pro.getProname());
+            cbb_ma_nong_trai_sp.setSelectedItem(pro.getProfarmid());
+            textGia_nong_san.setText(String.valueOf(pro.getProprice()));
+            cbb_loai_sp.setSelectedItem(pro.getProtype());
+            text_link_anh.setText(pro.getImage());
+            textmaSP.setEditable(false);
+        }
+    }//GEN-LAST:event_table_ds_nong_sanMouseClicked
+
+    private void btnxoaSPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnxoaSPActionPerformed
+        // TODO add your handling code here:
+         String id = textmaSP.getText();
+        try {
+            int n = JOptionPane.showConfirmDialog(
+                    this,
+                    "Ban co muon xoa?",
+                    "Alert",
+                    JOptionPane.YES_NO_OPTION);
+            if (n == JOptionPane.YES_OPTION) {
+                Controller_Product.delete(id);
+                showProduct();
+                reset_product();
+            }
+
+        } catch (SQLException ex) {
+            int code = ex.getErrorCode();
+            String msg = ex.getMessage();
+            JOptionPane.showMessageDialog(this, msg, String.valueOf(code), JOptionPane.ERROR_MESSAGE);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnxoaSPActionPerformed
+
+    private void btnsuaSPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnsuaSPActionPerformed
+        // TODO add your handling code here:
+        boolean check = false;
+        String id = textmaSP.getText();
+        String tenns = texttenSP.getText();
+        String mant = (String) cbb_ma_nong_trai_sp.getSelectedItem();
+        String loains = (String) cbb_loai_sp.getSelectedItem();
+        String anh = text_link_anh.getText();
+        Integer giasp = 0;
+
+        if (!textGia_nong_san.getText().equalsIgnoreCase("")) {
+            giasp = Integer.parseInt(textGia_nong_san.getText());
+        }
+        if (tenns.equals("") || mant == null || loains == null || anh.equals("") || giasp == 0) {
+            JOptionPane.showMessageDialog(this, "Hay dien day du thong tin");
+        } else {
+            try {
+                Product pro = new Product(id, tenns, giasp, mant, loains, anh, 0);
+                check = Controller_Product.update(pro);
+                if (check == true) {
+                    JOptionPane.showMessageDialog(this, "Đã sửa thành công.");
+                    showResources();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Sửa không thành công",
+                            "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
+                reset_product();
+            } catch (SQLException ex) {
+                int code = ex.getErrorCode();
+                String msg = ex.getMessage();
+                JOptionPane.showMessageDialog(this, msg, String.valueOf(code), JOptionPane.ERROR_MESSAGE);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_btnsuaSPActionPerformed
+
+    private void btn_reset_productActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_reset_productActionPerformed
+        // TODO add your handling code here:
+        try {
+            // TODO add your handling code here:
+            reset_product();
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btn_reset_productActionPerformed
+
+    private void btn_them_anh_nsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_them_anh_nsActionPerformed
+        // TODO add your handling code here:
+         try {
+            JFileChooser fileChooser = new JFileChooser();
+            FileNameExtensionFilter imageFilter = new FileNameExtensionFilter("Hình", "jpg", "png", "jpeg");
+            fileChooser.setFileFilter(imageFilter);
+            fileChooser.setMultiSelectionEnabled(false);
+            int x = fileChooser.showDialog(this, "Chọn file");
+            if (x == JFileChooser.APPROVE_OPTION) {
+                File file_in = fileChooser.getSelectedFile();
+                String path = file_in.getAbsolutePath();
+
+                File inStream = new File(path);
+
+                File file_out = new File("");
+                text_link_anh.setText("/src/Resources/" + inStream.getName());
+                File outStream = new File(file_out.getAbsolutePath() + "/src/Resources/" + inStream.getName());
+
+                Files.copy(inStream.toPath(), outStream.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            }
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btn_them_anh_nsActionPerformed
+
+    private void table_ds_nguyenVLMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_table_ds_nguyenVLMouseClicked
+        // TODO add your handling code here:
+        int selectedIndex = table_ds_nguyenVL.getSelectedRow();
+        if (selectedIndex >= 0) {
+            Resources rc = resourcesList.get(selectedIndex);
+            textMaVL.setText(rc.getReID());
+            textMaVL.setEditable(false);
+            texttenVL.setText(rc.getResourcesName());
+            cbxloaiVL.setSelectedItem(rc.getUnit());
+            textgiaVL.setText(String.valueOf(rc.getRePrice()));
+        }
+    }//GEN-LAST:event_table_ds_nguyenVLMouseClicked
+
+    private void btntimVLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btntimVLActionPerformed
+        // TODO add your handling code here:
+        try {
+            //List<Resources> resourcesList = Controller_Resource.findAll();
+            tableModel5.setRowCount(0);
+            String tenvl = texttenVL.getText();
+            resourcesList = Controller_Resource.TimRc(tenvl);
+
+            for (Resources rcs : resourcesList) {
+                tableModel5.addRow(new Object[]{tableModel5.getRowCount() + 1, rcs.getReID(),
+                    rcs.getResourcesName(), rcs.getRePrice(), rcs.getQuantity(), rcs.getUnit()});
+            }
+        } catch (ClassNotFoundException | NumberFormatException | SQLException e) {
+        }
+    }//GEN-LAST:event_btntimVLActionPerformed
+
+    private void btn_reset_nguyen_vatlieuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_reset_nguyen_vatlieuActionPerformed
+        // TODO add your handling code here:
+         try {
+            // TODO add your handling code here:
+            showResources();
+            reset_resources();
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btn_reset_nguyen_vatlieuActionPerformed
+
+    private void btntonKhovlActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btntonKhovlActionPerformed
+        // TODO add your handling code here:
+        try {
+            // TODO add your handling code here:
+            cardlayout.show(jpnCardLayout, "jpnListTonSP");
+            showInvenResources();
+            reset_in_resources();
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminHome.class
+                    .getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AdminHome.class
+                    .getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btntonKhovlActionPerformed
+
+    private void table_ds_inven_reMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_table_ds_inven_reMouseClicked
+        // TODO add your handling code here:
+        // TODO add your handling code here:
+        int selectedIndex = table_ds_inven_re.getSelectedRow();
+        if (selectedIndex >= 0) {
+            Inventory_Resources rc = in_resourcesList.get(selectedIndex);
+            cbb_makhovl_ton.setSelectedItem(rc.getStockId());
+            cbb_mavl_ton.setSelectedItem(rc.getReId());
+            text_Tenvl_ton.setText(rc.getName());
+            text_soluongvl_ton.setText(String.valueOf(rc.getNum_inventory_re()));
+            cbb_makhovl_ton.setEnabled(false);
+            cbb_mavl_ton.setEnabled(false);
+        }
+    }//GEN-LAST:event_table_ds_inven_reMouseClicked
+
+    private void cbb_mavl_tonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbb_mavl_tonActionPerformed
+        // TODO add your handling code here:
+        try {
+            // TODO add your handling code here:
+            show_text_name_resources();
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_cbb_mavl_tonActionPerformed
+
+    private void btntonSanPhamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btntonSanPhamActionPerformed
+        // TODO add your handling code here:
+        try {
+            // TODO add your handling code here:
+            cardlayout.show(jpnCardLayout, "jpnListNVL");
+            reset_in_product();
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btntonSanPhamActionPerformed
+
+    private void table_ds_ton_nsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_table_ds_ton_nsMouseClicked
+        // TODO add your handling code here:
+         // TODO add your handling code here:
+        int selectedIndex = table_ds_ton_ns.getSelectedRow();
+        if (selectedIndex >= 0) {
+            Inventory_Product pro = in_productList.get(selectedIndex);
+            cbb_ton_makho_ns.setSelectedItem(pro.getStockId());
+            cbb_ton_mans.setSelectedItem(pro.getProId());
+            txt_ton_tenns.setText(pro.getName());
+            txt_ton_soluong_ns.setText(String.valueOf(pro.getNum_inventory_pro()));
+            cbb_ton_makho_ns.setEnabled(false);
+            cbb_ton_mans.setEnabled(false);
+        }
+    }//GEN-LAST:event_table_ds_ton_nsMouseClicked
+
+    private void cbb_ton_mansActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbb_ton_mansActionPerformed
+        // TODO add your handling code here:
+         try {
+            // TODO add your handling code here:
+            show_text_name_product();
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_cbb_ton_mansActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -4533,13 +5422,13 @@ public class AdminHome extends javax.swing.JFrame {
     private javax.swing.JPanel jpnCardLayout;
     private javax.swing.JTable tableKH;
     private javax.swing.JTable tableKM;
-    private javax.swing.JTable tableListKH;
     private javax.swing.JTable tableNongTrai;
     private javax.swing.JTable tableSup;
     private javax.swing.JTable table_ds_inven_re;
     private javax.swing.JTable table_ds_nguyenVL;
+    private javax.swing.JTable table_ds_nong_san;
     private javax.swing.JTable table_ds_ton_ns;
-    private javax.swing.JTextField textGia;
+    private javax.swing.JTextField textGia_nong_san;
     private javax.swing.JTextField textMaKho;
     private javax.swing.JTextField textMaNT;
     private javax.swing.JTextField textMaVL;
