@@ -7,7 +7,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 /**
  *
- * @author Lenovo
+ * @author diuai
  */
 public class ConnectionUtils {
       /**

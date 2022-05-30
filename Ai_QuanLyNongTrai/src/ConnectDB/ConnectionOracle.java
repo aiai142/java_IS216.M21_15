@@ -7,7 +7,7 @@ package ConnectDB;
 import java.sql.*;
 /**
  *
- * @author Lenovo
+ * @author diuai
  */
 public class ConnectionOracle {
     public static Connection getOracleConnection() throws ClassNotFoundException,
