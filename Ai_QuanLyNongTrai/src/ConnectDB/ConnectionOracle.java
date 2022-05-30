@@ -14,9 +14,9 @@ public class ConnectionOracle {
             SQLException {
 
         String hostName = "localhost";
-        String sid = "orcl";
-        String userName = "diuai142";
-        String password = "diuaixinhdepne";
+        String sid = "orcl4";
+        String userName = "FRESH";
+        String password = "linh";
         
         // Khai báo class Driver cho DB Oracle
         // Việc này cần thiết với Java 5
