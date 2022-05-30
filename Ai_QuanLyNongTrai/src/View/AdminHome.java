@@ -3950,7 +3950,7 @@ public class AdminHome extends javax.swing.JFrame {
       
     }//GEN-LAST:event_btntimMaKMActionPerformed
 
-    private void btn_Timvl_tonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_Timvl_tonActionPerformed
+    private void btn_Timvl_tonActionPerformed(java.awt.event.ActionEvent evt) {                                              
         // TODO add your handling code here:
         String tenvl = text_Tenvl_ton.getText();
         try {
@@ -3967,9 +3967,9 @@ public class AdminHome extends javax.swing.JFrame {
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_btn_Timvl_tonActionPerformed
+    }                                             
 
-    private void btn_Themvl_tonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_Themvl_tonActionPerformed
+    private void btn_Themvl_tonActionPerformed(java.awt.event.ActionEvent evt) {                                               
         // TODO add your handling code here:
          boolean check = false;
         String makho = (String) cbb_makhovl_ton.getSelectedItem();
@@ -3999,9 +3999,9 @@ public class AdminHome extends javax.swing.JFrame {
             }
 
         }
-    }//GEN-LAST:event_btn_Themvl_tonActionPerformed
+    }                                              
 
-    private void btn_Xoavl_tonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_Xoavl_tonActionPerformed
+    private void btn_Xoavl_tonActionPerformed(java.awt.event.ActionEvent evt) {                                              
         // TODO add your handling code here:
         String mavl = (String) cbb_mavl_ton.getSelectedItem();
         String makho = (String) cbb_makhovl_ton.getSelectedItem();
@@ -4022,9 +4022,9 @@ public class AdminHome extends javax.swing.JFrame {
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_btn_Xoavl_tonActionPerformed
+    }                                             
 
-    private void btn_Suavl_tonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_Suavl_tonActionPerformed
+    private void btn_Suavl_tonActionPerformed(java.awt.event.ActionEvent evt) {                                              
         // TODO add your handling code here:
          boolean check = false;
         String makho = (String) cbb_makhovl_ton.getSelectedItem();
@@ -4054,48 +4054,21 @@ public class AdminHome extends javax.swing.JFrame {
             }
 
         }
-    }//GEN-LAST:event_btn_Suavl_tonActionPerformed
+    }                                             
 
-    private void btn_datlai_nvl_tonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_datlai_nvl_tonActionPerformed
+    private void btn_datlai_nvl_tonActionPerformed(java.awt.event.ActionEvent evt) {                                                   
         // TODO add your handling code here:
          try {
             // TODO add your handling code here:
             reset_in_resources();
-        try {
-            tableModel3.setRowCount(0);
-            String code = textmaCode.getText();
-            listDis = Discount_Controller.findDis(code);
-            for (Discount dis : listDis) {
-                tableModel3.addRow(new Object[]{tableModel3.getRowCount() + 1, dis.getDisID(),
-                    dis.getDisCode(), dis.getValue(), dis.getCusType(), dis.getStartDate(), dis.getEndDate()
-                });
-            }
+        
         } catch (SQLException ex) {
             Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_btntimMaKMActionPerformed
-
-    private void btn_Timvl_tonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_Timvl_tonActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btn_Timvl_tonActionPerformed
-
-    private void btn_Themvl_tonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_Themvl_tonActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btn_Themvl_tonActionPerformed
-
-    private void btn_Xoavl_tonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_Xoavl_tonActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btn_Xoavl_tonActionPerformed
-
-    private void btn_Suavl_tonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_Suavl_tonActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btn_Suavl_tonActionPerformed
-
-    private void btn_datlai_nvl_tonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_datlai_nvl_tonActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btn_datlai_nvl_tonActionPerformed
+                                              
+}
 
     private void btn_Tim_nongsan_tonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_Tim_nongsan_tonActionPerformed
         // TODO add your handling code here:
