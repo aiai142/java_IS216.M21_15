@@ -4,6 +4,26 @@
  */
 package Model;
 
+import java.sql.Date;
+
+/**
+ *
+ * @author DoQuynhChi
+ */
+public class Discount {
+
+    private String disID;
+    private String disCode;
+    private double value;
+    private String cusType;
+    private Date startDate;
+    private Date endDate;
+
+    public Discount(String disCode, double value, Date startDate, Date endDate) {
+        this.disCode = disCode;
+        this.value = value;
+        this.startDate = startDate;
+        this.endDate = endDate;
 import java.util.Date;
 
 /**

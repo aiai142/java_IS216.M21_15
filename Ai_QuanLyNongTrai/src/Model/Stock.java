@@ -6,6 +6,32 @@ package Model;
 
 /**
  *
+ * @author DoQuynhChi
+ */
+public class Stock {
+
+    private String stockID;
+    private String statusStock;
+    private String type;
+
+    public Stock(String stockID, String statusStock, String type) {
+        this.stockID = stockID;
+        this.statusStock = statusStock;
+        this.type = type;
+    }
+
+    public String getStockID() {
+        return stockID;
+    }
+
+    public String getStatusStock() {
+        return statusStock;
+    }
+
+    public String getType() {
+        return type;
+    }
+
  * @author ACER
  */
 public class Stock {

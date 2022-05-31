@@ -3,8 +3,15 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+<<<<<<< HEAD
             <file>file:/C:/Users/diuai/Downloads/Máy%20tính/java/Ai_QuanLyNongTrai/src/ConnectDB/ConnectionOracle.java</file>
             <file>file:/C:/Users/diuai/Downloads/Máy%20tính/java/Ai_QuanLyNongTrai/src/View/AdminHome.java</file>
+=======
+            <file>file:/D:/MERGE_CODE/DoAn_JAVA/Chi_QuanLyNongTrai/src/View/AdminHome.java</file>
+            <file>file:/D:/MERGE_CODE/DoAn_JAVA/Chi_QuanLyNongTrai/src/View/LoginPage.java</file>
+            <file>file:/D:/MERGE_CODE/DoAn_JAVA/Chi_QuanLyNongTrai/src/View/ForgotPasswordPage.java</file>
+            <file>file:/D:/MERGE_CODE/DoAn_JAVA/Chi_QuanLyNongTrai/src/Process/C_LoginPage_ForgotPasswordPage.java</file>
+>>>>>>> DoQuynhChi
         </group>
     </open-files>
 </project-private>

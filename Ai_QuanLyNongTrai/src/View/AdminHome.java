@@ -47,11 +47,32 @@ import javax.swing.table.TableModel;
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
+
+package View;
+
+import Model.Order_Export;
+import Process.C_AdminHome;
+import java.awt.CardLayout;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JTable;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+
+
 /**
  *
- * @author diuai
+ * @author DoQuynhChi
  */
+
 public class AdminHome extends javax.swing.JFrame {
+    ArrayList<Order_Export> listOrderExport;
+    DefaultTableModel tableModel;
+    int index = 0;
 
     DefaultTableModel tableModel8; //tableModel cua stock
     DefaultTableModel tableModel9; //tableModel cua employee
@@ -87,8 +108,12 @@ public class AdminHome extends javax.swing.JFrame {
 
     CardLayout cardlayout;
 
+    /*
+    * Constructor khong tham so + Init
+    */
     public AdminHome() {
         initComponents();
+        this.setLocationRelativeTo(null);
         cardlayout = (CardLayout) jpnCardLayout.getLayout();
         //Set table cho quan li nong trai
         
@@ -391,11 +416,12 @@ public class AdminHome extends javax.swing.JFrame {
         btnresetNT = new javax.swing.JButton();
         jpnCard3 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
-        jTextField3 = new javax.swing.JTextField();
-        jButton20 = new javax.swing.JButton();
+        txtFTimHoaDon = new javax.swing.JTextField();
+        btnTaoHoaDonMoi = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jTable3 = new javax.swing.JTable();
-        jLabel14 = new javax.swing.JLabel();
+        jTableListOrderExport = new javax.swing.JTable();
+        btnTimHD = new javax.swing.JButton();
+        btnResetTableHoaDon = new javax.swing.JButton();
         jpnCard4 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
         btnthemVL = new javax.swing.JButton();
@@ -829,7 +855,7 @@ public class AdminHome extends javax.swing.JFrame {
                 .addComponent(jbtManaTrans, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jbtManaStatis, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(188, Short.MAX_VALUE))
+                .addContainerGap(80, Short.MAX_VALUE))
         );
 
         jSplitPane2.setLeftComponent(jPanel1);
@@ -889,6 +915,7 @@ public class AdminHome extends javax.swing.JFrame {
         });
         tableListKH.setRowHeight(30);
         tableListKH.setRowSelectionAllowed(false);
+        tableListKH.setSelectionBackground(new java.awt.Color(242, 242, 242));
         tableListKH.setShowGrid(false);
         jScrollPane11.setViewportView(tableListKH);
 
@@ -949,7 +976,7 @@ public class AdminHome extends javax.swing.JFrame {
         jpnCard1Layout.setHorizontalGroup(
             jpnCard1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jScrollPane11, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 1349, Short.MAX_VALUE)
+            .addComponent(jScrollPane11, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 1124, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpnCard1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jpnCard1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1130,7 +1157,7 @@ public class AdminHome extends javax.swing.JFrame {
             .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jScrollPane2)
             .addGroup(jpnCard2Layout.createSequentialGroup()
-                .addGap(140, 406, Short.MAX_VALUE)
+                .addGap(140, 293, Short.MAX_VALUE)
                 .addGroup(jpnCard2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addGroup(jpnCard2Layout.createSequentialGroup()
                         .addComponent(jLabel28, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1144,7 +1171,7 @@ public class AdminHome extends javax.swing.JFrame {
                 .addComponent(jLabel27, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(27, 27, 27)
                 .addComponent(texttenNT, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(365, Short.MAX_VALUE))
+                .addContainerGap(253, Short.MAX_VALUE))
             .addGroup(jpnCard2Layout.createSequentialGroup()
                 .addGap(347, 347, 347)
                 .addComponent(btntimNongTrai)
@@ -1189,16 +1216,29 @@ public class AdminHome extends javax.swing.JFrame {
 
         jpnCard3.setBackground(new java.awt.Color(255, 255, 255));
 
-        jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel4.setText("DANH SÁCH ĐƠN HÀNG");
 
-        jButton20.setBackground(new java.awt.Color(244, 211, 94));
-        jButton20.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        jButton20.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/plus.png"))); // NOI18N
-        jButton20.setText("Tạo đơn mới");
+        txtFTimHoaDon.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        txtFTimHoaDon.setPreferredSize(new java.awt.Dimension(64, 28));
+        txtFTimHoaDon.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtFTimHoaDonActionPerformed(evt);
+            }
+        });
 
-        jTable3.setModel(new javax.swing.table.DefaultTableModel(
+        btnTaoHoaDonMoi.setBackground(new java.awt.Color(244, 211, 94));
+        btnTaoHoaDonMoi.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        btnTaoHoaDonMoi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/plus.png"))); // NOI18N
+        btnTaoHoaDonMoi.setText("Tạo đơn mới");
+        btnTaoHoaDonMoi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTaoHoaDonMoiActionPerformed(evt);
+            }
+        });
+
+        jTableListOrderExport.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -1207,7 +1247,7 @@ public class AdminHome extends javax.swing.JFrame {
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Double.class, java.lang.Object.class, java.lang.Object.class, java.lang.String.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Double.class, java.lang.String.class, java.lang.Double.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
                 false, false, false, false, false, false, false, false, false
@@ -1221,24 +1261,52 @@ public class AdminHome extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane3.setViewportView(jTable3);
+        jTableListOrderExport.setRowHeight(25);
+        jScrollPane3.setViewportView(jTableListOrderExport);
+        if (jTableListOrderExport.getColumnModel().getColumnCount() > 0) {
+            jTableListOrderExport.getColumnModel().getColumn(0).setPreferredWidth(20);
+        }
 
-        jLabel14.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel14.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/transparency.png"))); // NOI18N
+        btnTimHD.setBackground(new java.awt.Color(244, 211, 94));
+        btnTimHD.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        btnTimHD.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/transparency (1).png"))); // NOI18N
+        btnTimHD.setText("Tìm kiếm");
+        btnTimHD.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        btnTimHD.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTimHDActionPerformed(evt);
+            }
+        });
+
+        btnResetTableHoaDon.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        btnResetTableHoaDon.setText("Reset");
+        btnResetTableHoaDon.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnResetTableHoaDonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jpnCard3Layout = new javax.swing.GroupLayout(jpnCard3);
         jpnCard3.setLayout(jpnCard3Layout);
         jpnCard3Layout.setHorizontalGroup(
             jpnCard3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 1349, Short.MAX_VALUE)
-            .addGroup(jpnCard3Layout.createSequentialGroup()
-                .addComponent(jLabel14)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jTextField3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton20, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpnCard3Layout.createSequentialGroup()
+                .addGap(22, 22, 22)
+                .addGroup(jpnCard3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jpnCard3Layout.createSequentialGroup()
+                        .addComponent(txtFTimHoaDon, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnTimHD)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnTaoHoaDonMoi)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnResetTableHoaDon))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 1073, Short.MAX_VALUE))
+                .addGap(29, 29, 29))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpnCard3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(20, 20, 20))
         );
         jpnCard3Layout.setVerticalGroup(
             jpnCard3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1246,14 +1314,14 @@ public class AdminHome extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel4)
                 .addGap(18, 18, 18)
-                .addGroup(jpnCard3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel14, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jpnCard3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jButton20)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(780, Short.MAX_VALUE))
+                .addGroup(jpnCard3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtFTimHoaDon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnResetTableHoaDon, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnTaoHoaDonMoi, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnTimHD, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(16, 16, 16)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 569, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(212, Short.MAX_VALUE))
         );
 
         jpnCardLayout.add(jpnCard3, "jpnListOrder");
@@ -1370,7 +1438,7 @@ public class AdminHome extends javax.swing.JFrame {
                 .addGroup(jpnCard4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpnCard4Layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 1337, Short.MAX_VALUE))
+                        .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 1112, Short.MAX_VALUE))
                     .addGroup(jpnCard4Layout.createSequentialGroup()
                         .addGroup(jpnCard4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jpnCard4Layout.createSequentialGroup()
@@ -1577,7 +1645,7 @@ public class AdminHome extends javax.swing.JFrame {
                         .addComponent(btnsuaNCC)
                         .addGap(18, 18, 18)
                         .addComponent(btnresetNCC)))
-                .addGap(0, 604, Short.MAX_VALUE))
+                .addGap(0, 379, Short.MAX_VALUE))
         );
         jpnCard5Layout.setVerticalGroup(
             jpnCard5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1748,7 +1816,7 @@ public class AdminHome extends javax.swing.JFrame {
         jpnCard6Layout.setHorizontalGroup(
             jpnCard6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 1349, Short.MAX_VALUE)
+            .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 1124, Short.MAX_VALUE)
             .addGroup(jpnCard6Layout.createSequentialGroup()
                 .addGap(164, 164, 164)
                 .addGroup(jpnCard6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -2017,7 +2085,7 @@ public class AdminHome extends javax.swing.JFrame {
                 .addComponent(btnsuaMaKM)
                 .addGap(18, 18, 18)
                 .addComponent(btnresetKM)
-                .addContainerGap(615, Short.MAX_VALUE))
+                .addContainerGap(389, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpnCard7Layout.createSequentialGroup()
                 .addGap(61, 61, 61)
                 .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -2161,7 +2229,7 @@ public class AdminHome extends javax.swing.JFrame {
         jpnCard8Layout.setHorizontalGroup(
             jpnCard8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 1349, Short.MAX_VALUE)
+            .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 1124, Short.MAX_VALUE)
             .addGroup(jpnCard8Layout.createSequentialGroup()
                 .addGap(344, 344, 344)
                 .addComponent(btntimKho)
@@ -2365,7 +2433,7 @@ public class AdminHome extends javax.swing.JFrame {
                     .addComponent(textpassWord)
                     .addComponent(textuserName)
                     .addComponent(boxUserRole, 0, 115, Short.MAX_VALUE))
-                .addGap(0, 328, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(jpnCard9Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -2514,7 +2582,7 @@ public class AdminHome extends javax.swing.JFrame {
                 .addGroup(jpnCard10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpnCard10Layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jScrollPane10, javax.swing.GroupLayout.DEFAULT_SIZE, 1337, Short.MAX_VALUE))
+                        .addComponent(jScrollPane10, javax.swing.GroupLayout.DEFAULT_SIZE, 1112, Short.MAX_VALUE))
                     .addGroup(jpnCard10Layout.createSequentialGroup()
                         .addGroup(jpnCard10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jpnCard10Layout.createSequentialGroup()
@@ -2583,7 +2651,7 @@ public class AdminHome extends javax.swing.JFrame {
         jpnCard11.setLayout(jpnCard11Layout);
         jpnCard11Layout.setHorizontalGroup(
             jpnCard11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1349, Short.MAX_VALUE)
+            .addGap(0, 1124, Short.MAX_VALUE)
         );
         jpnCard11Layout.setVerticalGroup(
             jpnCard11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -2716,7 +2784,7 @@ public class AdminHome extends javax.swing.JFrame {
                         .addComponent(btn_Suavl_ton)
                         .addGap(18, 18, 18)
                         .addComponent(btn_datlai_nvl_ton)))
-                .addContainerGap(804, Short.MAX_VALUE))
+                .addContainerGap(578, Short.MAX_VALUE))
         );
         jpnCard12Layout.setVerticalGroup(
             jpnCard12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -2876,7 +2944,7 @@ public class AdminHome extends javax.swing.JFrame {
                         .addComponent(btn_sua_nongsan_ton)
                         .addGap(18, 18, 18)
                         .addComponent(btn_datlai_nongsan_ton)))
-                .addContainerGap(863, Short.MAX_VALUE))
+                .addContainerGap(637, Short.MAX_VALUE))
             .addComponent(jScrollPane15, javax.swing.GroupLayout.Alignment.TRAILING)
         );
         jpnCard13Layout.setVerticalGroup(
@@ -3826,6 +3894,29 @@ public class AdminHome extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_textOrd_Ex_NumActionPerformed
 
+    private void btnTimHDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTimHDActionPerformed
+        // TODO add your handling code here:
+        try {
+            // TODO add your handling code here:
+            ArrayList<Order_Export> arrLInvoice = C_AdminHome.timKiemHoaDon(txtFTimHoaDon.getText());
+            
+            // load du lieu tim kiem vao bang
+             tableModel.setRowCount(0);
+            
+             for (Order_Export hd : listOrderExport) {
+                  if (!arrLInvoice.isEmpty()) {
+                      if (arrLInvoice.get(0).getOrd_Ex_Num().equals(hd.getOrd_Ex_Num())) {
+                          index = listOrderExport.indexOf(hd) + 1;
+                          break;
+                      }
+                  }
+             }
+            
+             arrLInvoice.forEach((oe) -> {
+                tableModel.addRow(new Object[]{index, oe.getOrd_Ex_Num(), oe.getCusID(), oe.getDateOrdered(), oe.getTransID(),
+                    oe.getPreTotal(), oe.getDisID(), oe.getOrderTotal(), oe.getStatusTrans()});
+            });
+           
     //them kho
     private void btnthemKhoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnthemKhoActionPerformed
         String statusStock =   (String) boxTrangThai.getSelectedItem(); 
@@ -4283,6 +4374,12 @@ public class AdminHome extends javax.swing.JFrame {
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
         }
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnTimHDActionPerformed
     }//GEN-LAST:event_btnUpdateTransActionPerformed
 
     //tim kiem van chuyen
@@ -4302,29 +4399,29 @@ public class AdminHome extends javax.swing.JFrame {
 
     //button reset van chuyen
     private void btnResetTransportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetTransportActionPerformed
-        try {
-            showTransport();
-            reset_transport();
-        } catch (SQLException ex) {
-            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(AdminHome.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_btnResetTransportActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
+    private void txtFTimHoaDonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFTimHoaDonActionPerformed
+        
+    }//GEN-LAST:event_txtFTimHoaDonActionPerformed
 
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new AdminHome().setVisible(true);
+    private void btnTaoHoaDonMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTaoHoaDonMoiActionPerformed
+        // TODO add your handling code here:
+        this.setVisible(false);
+        new ChooseProductPage().setVisible(true);
+    }//GEN-LAST:event_btnTaoHoaDonMoiActionPerformed
 
+    private void btnResetTableHoaDonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetTableHoaDonActionPerformed
+        // TODO add your handling code here:
+        txtFTimHoaDon.setText("");
+        
+        // xoa du lieu bang
+            int soDong = tableModel.getRowCount();
+            for (int x = 0; x < soDong; x++) {
+                tableModel.removeRow(x);
             }
-        });
-    }
+            
+        showOrderExport();
+    }//GEN-LAST:event_btnResetTableHoaDonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> boxFarmID;
@@ -4335,8 +4432,11 @@ public class AdminHome extends javax.swing.JFrame {
     private javax.swing.JButton btnAddTrans;
     private javax.swing.JButton btnDelTrans;
     private javax.swing.JButton btnResetNV;
+    private javax.swing.JButton btnResetTableHoaDon;
     private javax.swing.JButton btnResetTransport;
     private javax.swing.JButton btnSearchTrans;
+    private javax.swing.JButton btnTaoHoaDonMoi;
+    private javax.swing.JButton btnTimHD;
     private javax.swing.JButton btnUpdateTrans;
     private javax.swing.JButton btn_Suavl_ton;
     private javax.swing.JButton btn_Themvl_ton;
@@ -4406,7 +4506,6 @@ public class AdminHome extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton11;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton20;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton9;
     private javax.swing.JLabel jLabel1;
@@ -4414,7 +4513,6 @@ public class AdminHome extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
@@ -4501,11 +4599,10 @@ public class AdminHome extends javax.swing.JFrame {
     private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable10;
     private javax.swing.JTable jTable2;
-    private javax.swing.JTable jTable3;
     private javax.swing.JTable jTable5;
     private javax.swing.JTable jTable8;
     private javax.swing.JTable jTable9;
-    private javax.swing.JTextField jTextField3;
+    private javax.swing.JTable jTableListOrderExport;
     private javax.swing.JButton jbtManaCus;
     private javax.swing.JButton jbtManaDis;
     private javax.swing.JButton jbtManaEmp;
@@ -4576,6 +4673,7 @@ public class AdminHome extends javax.swing.JFrame {
     private javax.swing.JTextField texttenVL;
     private javax.swing.JTextField texttienTL;
     private javax.swing.JTextField textuserName;
+    private javax.swing.JTextField txtFTimHoaDon;
     private com.toedter.calendar.JDateChooser txtStartDate;
     private javax.swing.JTextField txt_ton_soluong_ns;
     private javax.swing.JTextField txt_ton_tenns;

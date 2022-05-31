@@ -15,8 +15,8 @@ public class ConnectionOracle {
 
         String hostName = "localhost";
         String sid = "orcl";
-        String userName = "diuai142";
-        String password = "diuaixinhdepne";
+        String userName = "c##QLTT";
+        String password = "chris";
         
         // Khai báo class Driver cho DB Oracle
         // Việc này cần thiết với Java 5

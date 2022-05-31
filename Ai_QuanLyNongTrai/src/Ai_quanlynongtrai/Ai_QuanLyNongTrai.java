@@ -4,18 +4,20 @@
  */
 package Ai_quanlynongtrai;
 
-import ConnectDB.ConnectionUtils;
-import View.AdminHome;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.lang.model.util.Types;
-import java.sql.*;
+import View.LoginPage;
 
 /**
  *
+ * @author DoQuynhChi
+ */
+
+public class Ai_QuanLyNongTrai {
+
+    public static void main(String[] args) {
+        // TODO code application logic here
+        new LoginPage().setVisible(true);
+    }
+    
  * @author diuai
  */
 //public class Ai_QuanLyNongTrai {
