@@ -11,4 +11,6 @@ Ngày nay nhu cầu về nông sản sạch ngày càng tăng. Trang trại Fres
 ## Các chức năng có trong ứng dụng
 > * Đăng kí, đăng nhập, quên mật khẩu.
 > * Phần quản lí của nhân viên và admin như sau: 
->> * *Quản lí nông sản
+>> * Quản lí nông sản
+>>> Toàn bộ thông tin về nông sản được quản lý trên hệ thống. Mỗi loại nông sản có một mã nông sản riêng, tên nông sản, giá, được trồng ở nông trại nào, lưu trữ ở kho nào với số lượng tồn kho là bao nhiêu.
+
