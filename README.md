@@ -11,4 +11,4 @@ Ngày nay nhu cầu về nông sản sạch ngày càng tăng. Trang trại Fres
 ## Các chức năng có trong ứng dụng
 > * Đăng kí, đăng nhập, quên mật khẩu.
 > * Phần quản lí của nhân viên và admin như sau: 
->> * Quản lí nông sản
+>> * ## Quản lí nông sản
