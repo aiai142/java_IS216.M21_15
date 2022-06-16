@@ -43,4 +43,5 @@ Ngày nay nhu cầu về nông sản sạch ngày càng tăng. Trang trại Fres
 >>> Mã vận chuyển, mã đơn hàng, trạng thái.
 >> * Thống kê
 >>> Hệ thống có chức năng tính toán doanh thu theo từng loại sản phẩm, từng trang trại và thực hiện thống kê theo định kỳ hàng ngày/tuần/tháng/quý/năm.
-
+#### Dành cho khách hàng
+>> * Khách hàng sau khi đăng nhập vào hệ thống, có thể chọn mua sản phẩm bất kì. Sau khi hoàn tất việc chọn sản phẩm. Khách hàng nhấn vào nút tính tiền để coi hóa đơn mua hàng và xác nhận thanh toán. 
