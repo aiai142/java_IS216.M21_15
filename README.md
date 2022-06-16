@@ -9,8 +9,9 @@ Ngày nay nhu cầu về nông sản sạch ngày càng tăng. Trang trại Fres
 | Đỗ Quỳnh Chi               | 20520415 |
 | Lâm Võ Khánh My (tester)   | 20520912 |
 ## Các chức năng có trong ứng dụng
+#### Chức năng chung
 > * Đăng kí, đăng nhập, quên mật khẩu.
-> * Phần quản lí của nhân viên và admin như sau: 
+#### Phần quản lí của nhân viên và admin 
 >> * Quản lí nông sản
 >>> * Toàn bộ thông tin về nông sản được quản lý trên hệ thống. Mỗi loại nông sản có một mã nông sản riêng, tên nông sản, giá, được trồng ở nông trại nào, lưu trữ ở kho nào với số lượng tồn kho là bao nhiêu.
 >>> * Mỗi loại nông sản sẽ được chứa trong một kho tùy vào cách bảo quản nông sản đó.
