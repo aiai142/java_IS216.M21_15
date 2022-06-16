@@ -28,3 +28,19 @@ Ngày nay nhu cầu về nông sản sạch ngày càng tăng. Trang trại Fres
 >> * Quản lí nhà cung cấp
 >>> * Khi trang trại đặt mua nguyên vật liệu từ một nhà cung cấp, thông tin nhà cung cấp này sẽ được lưu trữ trong hệ thống để thuận tiện cho những lần đặt mua tiếp theo.
 >>> * Nhân viên được phép thêm, xóa, cập nhật, tra cứu thông tin nhà cung cấp.
+>> * Quản lí khách hàng
+>>> * Quản lí khách hàng đang là thành viên của hệ thống. Bao gồm mã khách hàng, tên khách hàng, giới tính, ngày sinh, địa chỉ, số điện thoại, email, loại khách hàng, tiền tích lũy, mã người dùng. 
+>> * Quản lí mã khuyến mãi
+>>> Thông tin 1 mã khuyến mãi bao gồm: mã khuyến mãi, mã code, giá trị khuyến mãi, loại, ngày bắt đầu, ngày kết thúc, tình trạng sử dụng.
+>>> Nhân viên nhấn vào nút tạo mã để tạo ra 1 mã code bất kì nhưng tương ứng với giá trị mã khuyến mãi và loại khách hàng nào được sử dụng.
+>> * Quản lí kho
+>>> Thông tin kho bao gồm: trạng thái kho và loại kho (nông sản, nguyên vật liệu). Mỗi kho sẽ có một mã riêng để quản lý. Nhân viên có thể thêm mới, xóa, sửa hoặc tra cứu thông tin kho.
+>> * Quản lí tồn kho nguyên vật liệu
+>> * Quản lí tồn kho nông sản
+>> * Quản lí nhân viên
+>>> 1 nhân viên bao gồm: mã nhân viên, mã nông trại mà nhân viên đó đang làm, tên, địa chỉ, số điện thoại, email, ngày vào làm, username, password.
+>> * Quản lí vận chuyển
+>>> Mã vận chuyển, mã đơn hàng, trạng thái.
+>> * Thống kê
+>>> Hệ thống có chức năng tính toán doanh thu theo từng loại sản phẩm, từng trang trại và thực hiện thống kê theo định kỳ hàng ngày/tuần/tháng/quý/năm.
+
