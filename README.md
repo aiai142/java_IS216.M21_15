@@ -9,4 +9,6 @@ Ngày nay nhu cầu về nông sản sạch ngày càng tăng. Trang trại Fres
 | Đỗ Quỳnh Chi               | 20520415 |
 | Lâm Võ Khánh My (tester)   | 20520912 |
 ## Các chức năng có trong ứng dụng
-> * Đăng kí, đăng nhập, quên mật khẩu
+> * Đăng kí, đăng nhập, quên mật khẩu.
+> * Phần quản lí của nhân viên và admin như sau: 
+> ** Quản lí nông sản
