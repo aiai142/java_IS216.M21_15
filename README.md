@@ -4,7 +4,7 @@ Ngày nay nhu cầu về nông sản sạch ngày càng tăng. Trang trại Fres
 ## Thành viên tham gia
 | Tên                        | MSSV     |
 |----------------------------|----------|
-| Phạm Lê Dịu Ái             | 20520556 |
+| Phạm Lê Dịu Ái             | 20520368 |
 | Trần Ngọc Linh             | 20521538 |
 | Đỗ Quỳnh Chi               | 20520415 |
 | Lâm Võ Khánh My (tester)   | 20520912 |
