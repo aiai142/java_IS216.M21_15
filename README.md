@@ -8,3 +8,4 @@ Ngày nay nhu cầu về nông sản sạch ngày càng tăng. Trang trại Fres
 | Trần Ngọc Linh             | 20521538 |
 | Đỗ Quỳnh Chi               | 20520415 |
 | Lâm Võ Khánh My (tester)   | 20520912 |
+## Các chức năng có trong ứng dụng
