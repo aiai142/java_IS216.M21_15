@@ -10,6 +10,8 @@ Ngày nay nhu cầu về nông sản sạch ngày càng tăng. Trang trại Fres
 | Lâm Võ Khánh My (tester)   | 20520912 |
 ## Mô hình ERD
 ![image](https://github.com/aiai142/java_IS216.M21_15/blob/main/ERD_FRESHFOOD.png)
+## Mô hình Class Diagram
+![image](https://github.com/aiai142/java_IS216.M21_15/blob/main/ClassDiagram.png)
 ## Các chức năng có trong ứng dụng
 #### Chức năng chung
 > * Đăng kí, đăng nhập, quên mật khẩu.
