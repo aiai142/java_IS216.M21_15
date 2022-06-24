@@ -15,6 +15,12 @@ Ngày nay nhu cầu về nông sản sạch ngày càng tăng. Trang trại Fres
 ## Các chức năng có trong ứng dụng
 #### Chức năng chung
 > * Đăng kí, đăng nhập, quên mật khẩu.
+#### Chức năng nâng cao
+> * Sử dụng JFileChooser phép nhân viên trang trại chọn ảnh từ desktop lưu trữ và hiển thị trên ứng dụng.
+> * Sử dụng Dynamic Component hiển thị Trang chọn sản phẩm mua hàng.
+> * Sử dụng thư viện Timer hiển thị quảng cáo nông sản động trên giao diện khách hàng.
+> * Gọi API công thức món ăn khi người dùng click chọn vào một nông sản quảng cáo https://spoonacular.com/food-api
+> * Sử dụng JavaMail gửi Gmail cho người dùng muốn tạo mật khẩu mới.
 #### Phần quản lí của nhân viên và admin 
 >> * Quản lí nông sản
 >>> * Toàn bộ thông tin về nông sản được quản lý trên hệ thống. Mỗi loại nông sản có một mã nông sản riêng, tên nông sản, giá, được trồng ở nông trại nào, lưu trữ ở kho nào với số lượng tồn kho là bao nhiêu.
