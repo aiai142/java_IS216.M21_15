@@ -16,6 +16,7 @@ Ngày nay nhu cầu về nông sản sạch ngày càng tăng. Trang trại Fres
 #### Chức năng chung
 > * Đăng kí, đăng nhập, quên mật khẩu.
 #### Chức năng nâng cao
+> * Zip file code lại như 1 ứng dụng trên desktop.
 > * Sử dụng JFileChooser phép nhân viên trang trại chọn ảnh từ desktop lưu trữ và hiển thị trên ứng dụng.
 > * Sử dụng Dynamic Component hiển thị Trang chọn sản phẩm mua hàng.
 > * Sử dụng thư viện Timer hiển thị quảng cáo nông sản động trên giao diện khách hàng.
